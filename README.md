@@ -11,9 +11,9 @@ This is a compilation of the documents required for the CMSC 495
 capstone project. This project shall contain the following
 documents:
 
-Project Plan
-Project Analysis
-Project Design
-Test Plan
-Project Code
+Project Plan,
+Project Analysis,
+Project Design,
+Test Plan,
+Project Code,
 Test Data
