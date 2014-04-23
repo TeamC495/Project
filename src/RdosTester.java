@@ -1,4 +1,4 @@
-package teamC;
+package TeamC;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -147,7 +147,7 @@ public class RdosTester extends JPanel implements ActionListener
 	    	Packet returnedPacket = transmit.receive();
 	    	
 	    	// Create an analysis object
-	    	Analysis analysis = new Analysis(returnedPacket.size, originalPacket.size);
+	    	Analysis analysis = new Analysis(returnedPacket.getPacketSize(), originalPacket.getPacketSize());
 	    	int percentage = analysis.getRatio();
 	    	
 	    	message = "Returned Packet to Original Packet Ratio is " + 
