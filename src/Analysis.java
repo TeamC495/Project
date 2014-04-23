@@ -1,5 +1,5 @@
 
-package teamC;
+package TeamC;
 
 public class Analysis {
 	
