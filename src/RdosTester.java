@@ -20,7 +20,6 @@ import java.awt.event.KeyEvent;
 public class RdosTester extends JPanel implements ActionListener
 {
 
-
     private JButton button;
     private JTextField srcIP1;
     private JTextField srcIP2;
@@ -130,43 +129,34 @@ public class RdosTester extends JPanel implements ActionListener
 
     public void actionPerformed(ActionEvent e) 
     {
-    	boolean valid = false;
-    	if(e.getSource()==button)
+    	if(e.getSource() == button)
     	{
-	    	System.out.println("I pressed the button!");
-	    	// Record the current time.
-	    	long timer = System.currentTimeMillis();
 	    	
+    		// Create the original packet. In future iterations, the textfields will already hold
+    		// integer values and will not have to convert them from strings.
 	    	Packet originalPacket = new Packet(Integer.parseInt(srcIP1.getText()), Integer.parseInt(srcIP2.getText()),
 	    			Integer.parseInt(srcIP3.getText()), Integer.parseInt(srcIP4.getText()), Integer.parseInt(dstIP1.getText()),
 	    			Integer.parseInt(dstIP2.getText()), Integer.parseInt(dstIP3.getText()), Integer.parseInt(dstIP4.getText()),
 	    			Integer.parseInt(port.getText()));
-
-    	}
-    	else
-    	{	
-    		System.out.println("I'm leaving a textfield");
-    		valid = validateText(((JTextField)e.getSource()).getText());
-    	}
-    	
+	    	
+	    	// Create a PacketTransmitter and send the original packet.
+	    	PacketTransmitter transmit = new PacketTransmitter();
+	    	transmit.send(originalPacket);
+	    	
+	    	// Get the returned packet
+	    	Packet returnedPacket = transmit.receive();
+	    	
+	    	// Create an analysis object
+	    	Analysis analysis = new Analysis(returnedPacket.size, originalPacket.size);
+	    	int percentage = analysis.getRatio();
+	    	
+	    	message = "Returned Packet to Original Packet Ratio is " + 
+	    			Integer.toString(percentage) + "%";
+			statusBar.setText(message);
+			statusBar.setForeground(Color.GREEN);
+    	}    	
     }
     
-   public boolean validateText(String string)
-   {
-	   char[] c = string.toCharArray();
-	   for(int i=0; i < string.length(); i++)
-	   {
-		   if ( !Character.isDigit(c[i]))
-		   {
-			   message = "Only integer values are allowed.";
-			   statusBar.setText(message);
-			   statusBar.setForeground(Color.RED);
-			   return false;
-		   }
-	   }
-	   statusBar.setText("");
-	   return true;
-   }
 
     /**
      * Create the GUI and show it.  For thread safety, 
