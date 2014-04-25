@@ -1,4 +1,4 @@
-package TeamC;
+package teamC;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -14,9 +14,21 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 
-
+/**
+ * The RdosTester class is the GUI for the Reflected Denial of Service
+ * Tester application. It allows the user to enter a source and destination
+ * IP address as well as a port number. It also contains a Transmit button
+ * that initiates the test. The results are shown at the bottom of the panel
+ * in a status bar.
+ * 
+ * @author Jamie M. Lane
+ * @version 1.0
+ * 
+ * CMSC 495
+ * Team C
+ * Date Created: 25 April 2014
+ * */
 public class RdosTester extends JPanel implements ActionListener
 {
 
@@ -46,7 +58,7 @@ public class RdosTester extends JPanel implements ActionListener
     private JPanel panel;
     private JPanel spacer;
 
-
+    // Constructor initializes gui components and layout.
     public RdosTester() 
     {
     	// Initialize the source IP address labels and textfields
@@ -87,6 +99,7 @@ public class RdosTester extends JPanel implements ActionListener
         button.setToolTipText("Click this button to transmit the packet.");
         button.addActionListener(this);
 
+        // Intialize the status bar
         statusBar = new JLabel();
         raisedEtched = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
         statusBar.setBorder(raisedEtched);
@@ -127,11 +140,16 @@ public class RdosTester extends JPanel implements ActionListener
         add(panel);
     }
 
+    /*
+     * The actionPerformed method takes action depending upon
+     * which component in the gui is selected by the user. Currently
+     * the Transmit button is the only component with an action
+     * tied to it. 
+     **/
     public void actionPerformed(ActionEvent e) 
     {
     	if(e.getSource() == button)
-    	{
-	    	
+    	{	    	
     		// Create the original packet. In future iterations, the textfields will already hold
     		// integer values and will not have to convert them from strings.
 	    	Packet originalPacket = new Packet(Integer.parseInt(srcIP1.getText()), Integer.parseInt(srcIP2.getText()),
@@ -143,14 +161,16 @@ public class RdosTester extends JPanel implements ActionListener
 	    	PacketTransmitter transmit = new PacketTransmitter();
 	    	transmit.send(originalPacket);
 	    	
-	    	// Get the returned packet
-	    	Packet returnedPacket = transmit.receive();
+	    	// Get the received packet
+	    	Packet receivedPacket = transmit.receive();
 	    	
 	    	// Create an analysis object
-	    	Analysis analysis = new Analysis(returnedPacket.getPacketSize(), originalPacket.getPacketSize());
+	    	Analysis analysis = new Analysis(receivedPacket.getPacketSize(), originalPacket.getPacketSize());
 	    	int percentage = analysis.getRatio();
+	    	System.out.println("Received size: " + receivedPacket.getPacketSize());	    	
+	    	System.out.println("Original size: " + originalPacket.getPacketSize());
 	    	
-	    	message = "Returned Packet to Original Packet Ratio is " + 
+	    	message = "Received Packet to Original Packet Ratio is " + 
 	    			Integer.toString(percentage) + "%";
 			statusBar.setText(message);
 			statusBar.setForeground(Color.GREEN);
