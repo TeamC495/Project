@@ -1,4 +1,4 @@
-package TeamC;
+package teamC;
 
 // models an IP packet
 public class Packet {

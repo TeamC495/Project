@@ -1,9 +1,7 @@
-
-package TeamC;
+package teamC;
 
 public class Analysis {
 	
-
 	// variables
 	int originalSize;
 	int receivedSize;
@@ -14,20 +12,19 @@ public class Analysis {
 		
 	this.receivedSize = receivedSize;
 	this.originalSize = originalSize;
-	ratioCalculator();
-	
+	ratioCalculator();	
 	}
+	
 	// determine ratio
 	void ratioCalculator(){
 		
-	ratio = ((float)(receivedSize))/((float)(originalSize));
-	
+	ratio = ((float)(receivedSize))/((float)(originalSize));	
 	}
 	
 	// get ratio as a percentage
 	int getRatio (){
 	
-	return (int)(ratio * 100);
-	
-	}}
+	return (int)(ratio * 100);	
+	}
+}
 

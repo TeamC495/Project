@@ -1,4 +1,4 @@
-package TeamC;
+package teamC;
 
 public class PacketTransmitter {
 	

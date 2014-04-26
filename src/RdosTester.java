@@ -167,8 +167,8 @@ public class RdosTester extends JPanel implements ActionListener
 	    	// Create an analysis object
 	    	Analysis analysis = new Analysis(receivedPacket.getPacketSize(), originalPacket.getPacketSize());
 	    	int percentage = analysis.getRatio();
-	    	System.out.println("Received size: " + receivedPacket.getPacketSize());	    	
-	    	System.out.println("Original size: " + originalPacket.getPacketSize());
+//	    	System.out.println("Received size: " + receivedPacket.getPacketSize());	    	
+//	    	System.out.println("Original size: " + originalPacket.getPacketSize());
 	    	
 	    	message = "Received Packet to Original Packet Ratio is " + 
 	    			Integer.toString(percentage) + "%";
