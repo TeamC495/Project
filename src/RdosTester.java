@@ -152,7 +152,7 @@ public class RdosTester extends JPanel implements ActionListener
     	{	    	
     		// Create the original packet. In future iterations, the textfields will already hold
     		// integer values and will not have to convert them from strings.
-	    	Packet originalPacket = new Packet(Integer.parseInt(srcIP1.getText()), Integer.parseInt(srcIP2.getText()),
+	    	RdosPacket originalPacket = new RdosPacket(Integer.parseInt(srcIP1.getText()), Integer.parseInt(srcIP2.getText()),
 	    			Integer.parseInt(srcIP3.getText()), Integer.parseInt(srcIP4.getText()), Integer.parseInt(dstIP1.getText()),
 	    			Integer.parseInt(dstIP2.getText()), Integer.parseInt(dstIP3.getText()), Integer.parseInt(dstIP4.getText()),
 	    			Integer.parseInt(port.getText()));
@@ -162,7 +162,7 @@ public class RdosTester extends JPanel implements ActionListener
 	    	transmit.send(originalPacket);
 	    	
 	    	// Get the received packet
-	    	Packet receivedPacket = transmit.receive();
+	    	RdosPacket receivedPacket = transmit.receive();
 	    	
 	    	// Create an analysis object
 	    	Analysis analysis = new Analysis(receivedPacket.getPacketSize(), originalPacket.getPacketSize());

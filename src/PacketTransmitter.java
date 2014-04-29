@@ -65,7 +65,7 @@ public class PacketTransmitter {
 	
 	// sends packet to raw network interface
 	// currently prints packet to console
-	public void send(Packet transmitPacket) {
+	public void send(RdosPacket transmitPacket) {
 		
 		System.out.println("\nTransmit packet:\n" + transmitPacket.toString() + "\n");
 		
@@ -73,9 +73,9 @@ public class PacketTransmitter {
 	
 	// receive packet from raw network interface
 	// currently prints and returns hard-coded packet
-	public Packet receive() {
+	public RdosPacket receive() {
 		
-		Packet receivePacket = new Packet(statusResponse);
+		RdosPacket receivePacket = new RdosPacket(statusResponse);
 		
 		System.out.println("\nReceive packet:\n" + receivePacket.toString() + "\n");
 		
