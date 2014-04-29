@@ -22,13 +22,6 @@
 
 package teamC;
 
-//create packet in memory
-import org.jnetpcap.packet.JMemoryPacket;
-import org.jnetpcap.packet.JPacket;
-import org.jnetpcap.protocol.JProtocol;
-import org.jnetpcap.protocol.lan.Ethernet;
-import org.jnetpcap.protocol.network.Ip4;
-
 // models an IP packet
 public class RdosPacket {
 	
@@ -42,9 +35,8 @@ public class RdosPacket {
 	String dstPort;
 	
 	// base getStatus request packet, includes IPv4 header, UDP header, UDP data
-	String packetBase = "ffffffffffff001fbc01b4db0800450000293cbd400080118c93c0a8"
-			          + "580ac0a858186d386d380015319affffffff676574737461747573";	
-
+	String packetBase = "ffffffffffff001fbc01b4db0800450000293cbd400080118c93c0a8580ac0a858186d386d380015319affffffff676574737461747573";
+	
 	// complete IP packet
 	String completePacket;
 	
@@ -105,7 +97,7 @@ public class RdosPacket {
 	// overwrite packetBase IP and UDP header fields with user specified info
 	private void packetRewrite()
 	{
-		completePacket = packetBase.substring(0,24) + srcIp + dstIp + packetBase.substring(40,44) + dstPort + packetBase.substring(48,packetBase.length());
+		completePacket = packetBase.substring(0,52) + srcIp + dstIp + packetBase.substring(68,72) + dstPort + packetBase.substring(76,packetBase.length());
 		
 	} // end method packetRewrite
 	
