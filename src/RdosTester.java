@@ -42,15 +42,7 @@ public class RdosTester extends JPanel implements ActionListener
     private JTextField dstIP3;
     private JTextField dstIP4;
     private JTextField port;
-    private JLabel dot1;
-    private JLabel dot2;
-    private JLabel dot3;
-    private JLabel dot4;
-    private JLabel dot5;
-    private JLabel dot6;
-    private JLabel sourceLabel;
-    private JLabel destinationLabel;
-    private JLabel portLabel;
+
     private JLabel statusBar;
     private Border raisedEtched;
     private String DOT = ".";
@@ -71,7 +63,7 @@ public class RdosTester extends JPanel implements ActionListener
     public RdosTester() 
     {
     	// Initialize the source IP address labels and textfields
-    	sourceLabel = new JLabel("Source IP Address:");
+
     	srcIP1 = new JTextField(3);
         srcIP1.setText("127");
     	srcIP1.addActionListener(this);
@@ -84,12 +76,10 @@ public class RdosTester extends JPanel implements ActionListener
     	srcIP4 = new JTextField(3);
         srcIP4.setText("1");
     	srcIP4.addActionListener(this);
-    	dot1 = new JLabel(DOT);
-    	dot2 = new JLabel(DOT);
-    	dot3 = new JLabel(DOT);
+
     	
     	// Initialize the destination IP address labels and textfields
-    	destinationLabel = new JLabel("Destination IP Address:");
+
     	dstIP1 = new JTextField(3);
         dstIP1.setText("127");
     	dstIP1.addActionListener(this);
@@ -102,12 +92,10 @@ public class RdosTester extends JPanel implements ActionListener
     	dstIP4 = new JTextField(3);
         dstIP4.setText("1");
     	dstIP4.addActionListener(this);
-    	dot4 = new JLabel(DOT);
-    	dot5 = new JLabel(DOT);
-    	dot6 = new JLabel(DOT);    
+
     	
     	// Initialize the port label and textfield
-    	portLabel = new JLabel("Port:");    	
+
     	port = new JTextField(6);
         port.setText("27960");
     	port.addActionListener(this);
@@ -130,25 +118,25 @@ public class RdosTester extends JPanel implements ActionListener
         panel.setPreferredSize(new Dimension(350, 125));
         
         //Add Components to the panel using the default FlowLayout.       
-        panel.add(sourceLabel);
+        panel.add(new JLabel("Source IP Address:"));
         panel.add(srcIP1);
-        panel.add(dot1);
+        panel.add(new JLabel(DOT));
         panel.add(srcIP2);
-        panel.add(dot2);
+        panel.add(new JLabel(DOT));
         panel.add(srcIP3);
-        panel.add(dot3);
+        panel.add(new JLabel(DOT));
         panel.add(srcIP4);
         
-        panel.add(destinationLabel);
+        panel.add(new JLabel("Destination IP Address:"));
         panel.add(dstIP1);
-        panel.add(dot4);
+        panel.add(new JLabel(DOT));
         panel.add(dstIP2);
-        panel.add(dot5);
+        panel.add(new JLabel(DOT));
         panel.add(dstIP3);
-        panel.add(dot6);
+        panel.add(new JLabel(DOT));
         panel.add(dstIP4);
         
-        panel.add(portLabel);
+        panel.add(new JLabel("Port:"));
         panel.add(port);
         panel.add(spacer);
         panel.add(button);
@@ -256,8 +244,8 @@ public class RdosTester extends JPanel implements ActionListener
 	    			validPort);
 
 	    	// Create a PacketTransmitter and send the original packet.
-	    	PacketTransmitter transmit = new PacketTransmitter();
-	    	transmit.send(originalPacket);
+	    	PacketTransmitter2 transmit = new PacketTransmitter2();
+	    	transmit.send(originalPacket,1);
 
 	    	// Get the received packet
 	    	RdosPacket receivedPacket = transmit.receive();
