@@ -22,63 +22,234 @@
 
 package teamC;
 
+// required for creating lists of interfaces, labels, etc
+import java.util.ArrayList;
+import java.util.List;
+
+// for labeling packets received
+import java.util.Date;
+
+// required for packet capture
+import org.jnetpcap.Pcap;
+
+// required to get network interface(s)
+import org.jnetpcap.PcapDLT;
+import org.jnetpcap.PcapIf;
+
+// required to format packet for transmission
+// required to process received packets
+import org.jnetpcap.packet.JMemoryPacket;
+import org.jnetpcap.packet.JPacket;
+import org.jnetpcap.packet.JPacketHandler;
+import org.jnetpcap.protocol.JProtocol;
+import org.jnetpcap.protocol.lan.Ethernet;
+import org.jnetpcap.protocol.network.Ip4;
+import org.jnetpcap.protocol.tcpip.Udp;
+
+// required to filter packets
+import org.jnetpcap.PcapBpfProgram;
+
+// allows transmission and receipt of raw packets
 public class PacketTransmitter {
 	
 	// represents typical status response packet
-	String statusResponse = 
-			"4500039b00004000401105dfc0a85818c0a8580a6d386d3803876789ffffffff"
-			+ "737461747573526573706f6e73650a5c675f6c6d735f6d6f64655c305c656c69"
-			+ "6d696e6174696f6e5f726f756e6474696d655c3132305c675f766f746547616d"
-			+ "6574797065735c2f302f312f332f342f352f362f372f382f392f31302f31312f"
-			+ "31322f5c675f646f5761726d75705c315c766964656f666c6167735c375c675f"
-			+ "6d617847616d65436c69656e74735c305c675f64656c61674869747363616e5c"
-			+ "315c675f766f74654d696e467261676c696d69745c305c675f766f74654d6178"
-			+ "467261676c696d69745c305c675f766f74654d696e54696d656c696d69745c30"
-			+ "5c675f766f74654d617854696d656c696d69745c313030305c675f616c6c6f77"
-			+ "766f74655c315c636170747572656c696d69745c385c626f745f6d696e706c61"
-			+ "796572735c345c73765f6670735c32355c73765f6d6178636c69656e74735c38"
-			+ "5c675f67616d65747970655c305c74696d656c696d69745c31355c667261676c"
-			+ "696d69745c31355c646d666c6167735c305c73765f666c6f6f6450726f746563"
-			+ "745c315c73765f6d617850696e675c313030305c73765f6d696e50696e675c30"
-			+ "5c73765f6d6178526174655c32353030305c73765f6d696e526174655c305c73"
-			+ "765f686f73746e616d655c4f412054657374205365727665725c76657273696f"
-			+ "6e5c696f71332b6f6120312e33365f53564e313931304d206c696e75782d7838"
-			+ "365f36342044656320323520323031315c70726f746f636f6c5c37315c6d6170"
-			+ "6e616d655c616767726573736f725c73765f70726976617465436c69656e7473"
-			+ "5c305c73765f616c6c6f77446f776e6c6f61645c315c73765f6d617374657231"
-			+ "5c64706d61737465722e64656174686d61736b2e6e65745c67616d656e616d65"
-			+ "5c626173656f615c656c696d666c6167735c305c766f7465666c6167735c3736"
-			+ "375c675f6e656564706173735c305c675f6f62656c69736b5265737061776e44"
-			+ "656c61795c31305c675f656e61626c65447573745c305c675f656e61626c6542"
-			+ "72656174685c305c675f726f636b6574735c305c675f696e7374616e74676962"
-			+ "5c305c675f616c74457863656c6c656e745c305c675f74696d657374616d705c"
-			+ "323031342d30342d32362031343a34343a35330a302030202248656164637261"
-			+ "7368220a33203020224d757269656c6c65220a3820302022477269736d220a32"
-			+ "203020225361726765220a3020313620226772696667726966220a";
+	private String statusResponse = "empty";	
 	
+	// For any error msgs
+	private StringBuilder errbuf = new StringBuilder(); 
 	
+	// hold list of available network adapters
+	private List<PcapIf>  networkInterfaces = new ArrayList<PcapIf>();	
 	
-	// constructor
+	// constructor; calls method to get available network interfaces
 	public PacketTransmitter() {
+		
+		// enumerate network interfaces
+		getNetworkInterfaces();		
+		
+		// create array of interface labels
+		getInterfaceLabels();
 		
 	} // end constructor PacketTransmitter
 	
-	// sends packet to raw network interface
-	// currently prints packet to console
-	public void send(RdosPacket transmitPacket) {
+	// gets list of available network interfaces
+	private void getNetworkInterfaces() {
 		
-		System.out.println("\nTransmit packet:\n" + transmitPacket.toString() + "\n");
+		// count available interfaces while adding their handles to a list
+		int numberOfInterfaces = Pcap.findAllDevs(networkInterfaces, errbuf);
+		
+		// generate error if no interfaces available
+		if (numberOfInterfaces == Pcap.NOT_OK || networkInterfaces.isEmpty()) {
+			System.err.printf("Can't read list of devices, error is %s", errbuf
+			    .toString());
+			return;
+		}
+		
+		System.out.println("Network device found!");		
+	
+	} // end method getNetworkInterfaces
+	
+	// return an array of strings filled with network interface labels
+	public ArrayList<String> getInterfaceLabels() {
+		
+		// create array to hold labels
+		ArrayList<String> labelList = new ArrayList<String>();
+		
+		// init variable to hold number for each interface
+		int i = 0;
+		
+		// for each device in list of network interfaces, add label to label list
+		for (PcapIf device : networkInterfaces) 
+		{
+			String description = (device.getDescription() != null) ? device.getDescription()
+			        : "No description available";
+			
+			labelList.add("#" + i + " " + description);
+			
+			System.out.println(labelList.get(i));
+			
+			i++;
+		}
+		
+		// return populated label list
+		return labelList;
+
+	} // end method getInterfaceLabels
+	
+	// corrects packet checksums, sends packet to raw network interface
+	// captures and filters packets from raw network interface
+	public void send(RdosPacket transmitPacketContents, int networkInterface) {
+		
+		// create JPacket for actual transmission
+		JPacket transmitPacket = new JMemoryPacket(JProtocol.ETHERNET_ID, transmitPacketContents.toString());
+		
+		// get IP header from packet
+		Ip4 ip = transmitPacket.getHeader(new Ip4());
+		
+		// fix IP checksum
+		ip.checksum(ip.calculateChecksum());		
+		
+		// get UDP header from packet
+		Udp udp = transmitPacket.getHeader(new Udp());
+		
+		// fix UDP checksum
+		udp.checksum(udp.calculateChecksum());
+		
+		// set filter using port info from UDP header
+		String filterString = "port " + String.valueOf(udp.destination() + " && udp");
+		
+		// update packet state
+		transmitPacket.scan(Ethernet.ID);		
+		
+		// select specified network interface
+		PcapIf device = networkInterfaces.get(networkInterface);	
+		
+		// configure network stream for capture and transmission
+		int snaplen = 64 * 1024; // capture complete packets
+		int flags = Pcap.MODE_PROMISCUOUS; // capture all packets
+		int timeout = 5 * 1000; // seconds in milliseconds; when to stop capture
+		int dataLinkType = PcapDLT.CONST_EN10MB; // ethernet 10/100/1000 MB
+		int optimize = 0;         // 0 = false; do not optimize capture
+		int netmask = 0xFFFFFF00; // 255.255.255.0; only capture packets available in this subnet
+		
+		// init a filter "program"; will be compiled
+		PcapBpfProgram program = new PcapBpfProgram();
+		
+		// compile filter
+		if (Pcap.compileNoPcap(snaplen, dataLinkType, program, filterString, optimize, netmask) != Pcap.OK) {
+			System.err.println("unable to compile filter");
+			return;
+		}
+		
+		// create packet handler to process received packets
+		JPacketHandler<String> jpacketHandler = createPacketHandler();
+		
+		// begin packet capture on network
+		Pcap pcap = Pcap.openLive(device.getName(), snaplen, flags, timeout, errbuf);		
+
+		// apply filter
+		if (pcap.setFilter(program) != Pcap.OK) {
+			System.err.println(pcap.getErr());
+			return;		
+		}
+		
+		System.out.println("Filter set !!! : " + filterString);
+				
+		// transmit packet
+		if (pcap.sendPacket(transmitPacket) != Pcap.OK) {
+			System.err.println(pcap.getErr());
+		}	
+		
+		// get packets; up to 3; send them to handler
+		pcap.dispatch(3, jpacketHandler, null);
+		
+		// close network connection
+		pcap.close();
 		
 	} // end method send
+	
+	// processes captured packets
+	private JPacketHandler<String> createPacketHandler() {
+		
+		// create object that will display size and time information for captured packets
+		// passes receive packets to formatter method
+		JPacketHandler<String> jpacketHandler = new JPacketHandler<String>() {
+
+			public void nextPacket(JPacket receivePacket, String user) {
+
+				// display packet info
+				System.out.printf("Received packet at %s caplen=%-4d\n",
+				    new Date(receivePacket.getCaptureHeader().timestampInMillis()), // timestamp
+				    receivePacket.getCaptureHeader().caplen()  // Length actually captured
+				    );
+				
+				// pass packet to formatter method
+				formatReceivePacket(receivePacket);						
+			
+			} // end method nextPacket
+		
+		}; // end jpacketHandler declaration
+		
+		// return packet handling object
+		return jpacketHandler;
+	
+	} // end method createPacketHandler
+	
+	// format received packets for instantiation as RdosPacket object
+	private void formatReceivePacket(JPacket receivePacket) {
+		
+		// get number of bytes in packet
+		int responseSize = receivePacket.size();
+		
+		// create array to hold string representation of hex from packet bytes
+		String[] temp = new String[responseSize];
+		
+		// populate array with bytes
+		for(int i = 0; i < responseSize; i++) {
+			temp[i] = Integer.toHexString(0x100 | receivePacket.getUByte(i)).substring(1); 
+		}
+		
+		// concatenate string array elements
+		StringBuilder packetBuilder = new StringBuilder();
+		for(String element : temp) {
+		    packetBuilder.append(element);
+		}
+		
+		// fill class variable with string representing packet
+		statusResponse = packetBuilder.toString();
+		
+	} // end method formatReceivePacket
 	
 	// receive packet from raw network interface
 	// currently prints and returns hard-coded packet
 	public RdosPacket receive() {
 		
+		// create RdosPacket object using contents of captured packet
 		RdosPacket receivePacket = new RdosPacket(statusResponse);
 		
-		System.out.println("\nReceive packet:\n" + receivePacket.toString() + "\n");
+		System.err.println("\nReceive packet:\n" + receivePacket.toString() + "\n");
 		
+		// return object
 		return receivePacket;
 	
 	} // end method receive

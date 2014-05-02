@@ -26,22 +26,23 @@ package teamC;
 public class RdosPacket {
 	
 	// source address
-	String srcIp;
+	private String srcIp;
 	
 	// destination address
-	String dstIp;
+	private String dstIp;
 	
 	// destination port
-	String dstPort;
+	private String dstPort;
 	
 	// base getStatus request packet, includes IPv4 header, UDP header, UDP data
-	String packetBase = "ffffffffffff001fbc01b4db0800450000293cbd400080118c93c0a8580ac0a858186d386d380015319affffffff676574737461747573";
+	//private String packetBase = "ffffffffffff001fbc01b4db0800450000293cbd400080118c93c0a8580ac0a858186d386d380015319affffffff676574737461747573";
+	  private String packetBase = "ffffffffffff001fbc01b4db08004500002b60a100008011c166c0a85812ffffffff6d386d3b001762c3ffffffff676574696e666f20787878000000";
 	
 	// complete IP packet
-	String completePacket;
+	private String completePacket;
 	
 	// size of packet in bytes
-	int packetSize;	
+	private int packetSize;	
 	
 	// constructor requiring complete packet as String representing hex
 	// useful for received packets
@@ -73,10 +74,10 @@ public class RdosPacket {
 		
 	}  // end Packet constructor
 	
-	// calculate packet size in bytes
+	// calculate packet size in bytes, subtracts byte-count for ethernet header
 	private void packetSizeCalc() {
 		
-		packetSize = completePacket.length() / 2;
+		packetSize = (completePacket.length() / 2) - 17;
 		
 	}  // end method packetSizeCalc	
 	
@@ -105,6 +106,13 @@ public class RdosPacket {
 	public int getPacketSize() {
 		
 		return packetSize;
+	
+	} // end method getPacketSize
+	
+	// return packet size
+	public String getPort() {
+		
+		return completePacket.substring(73,76);
 	
 	} // end method getPacketSize
 	
