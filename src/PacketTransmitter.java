@@ -68,7 +68,7 @@ public class PacketTransmitter {
 		getNetworkInterfaces();		
 		
 		// create array of interface labels
-		getInterfaceLabels();
+		// getInterfaceLabels();
 		
 	} // end constructor PacketTransmitter
 	
