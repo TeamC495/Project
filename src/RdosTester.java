@@ -2,6 +2,7 @@ package teamC;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
@@ -14,6 +15,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * The RdosTester class is the GUI for the Reflected Denial of Service
@@ -42,6 +44,7 @@ public class RdosTester extends JPanel implements ActionListener
     private JTextField dstIP3;
     private JTextField dstIP4;
     private JTextField port;
+    private JComboBox networkInterfaceList;
 
     private JLabel statusBar;
     private Border raisedEtched;
@@ -58,6 +61,8 @@ public class RdosTester extends JPanel implements ActionListener
     private int validDstIP3;
     private int validDstIP4;
     private int validPort;
+
+	private PacketTransmitter2 transmit = new PacketTransmitter2();
 
     // Constructor initializes gui components and layout.
     public RdosTester() 
@@ -95,17 +100,21 @@ public class RdosTester extends JPanel implements ActionListener
 
     	
     	// Initialize the port label and textfield
-
     	port = new JTextField(6);
         port.setText("27960");
     	port.addActionListener(this);
+    	
+    	// Initialize the network interface combobox
+    	// Get the available network interfaces
+    	ArrayList<String> networkInterfaces = transmit.getInterfaceLabels();
+        networkInterfaceList = new JComboBox(networkInterfaces.toArray());
     	
     	// Initialize the button
         button = new JButton("Transmit Packet");
         button.setToolTipText("Click this button to transmit the packet.");
         button.addActionListener(this);
 
-        // Intialize the status bar
+        // Initialize the status bar
         statusBar = new JLabel();
         raisedEtched = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
         statusBar.setBorder(raisedEtched);
@@ -113,9 +122,9 @@ public class RdosTester extends JPanel implements ActionListener
         
         // Create the panels to hold the components. The spacer
         // panel is so the transmit button will be right aligned.
-        spacer = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 0));
+        spacer = new JPanel(new FlowLayout(FlowLayout.LEFT, 300, 0));
         panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panel.setPreferredSize(new Dimension(350, 125));
+        panel.setPreferredSize(new Dimension(350, 160));
         
         //Add Components to the panel using the default FlowLayout.       
         panel.add(new JLabel("Source IP Address:"));
@@ -135,11 +144,15 @@ public class RdosTester extends JPanel implements ActionListener
         panel.add(dstIP3);
         panel.add(new JLabel(DOT));
         panel.add(dstIP4);
-        
+               
         panel.add(new JLabel("Port:"));
         panel.add(port);
-        panel.add(spacer);
+        
+        panel.add(new JLabel("Network Interface:"));
+        panel.add(networkInterfaceList);
+        
         panel.add(button);
+        panel.add(spacer);
         
         panel.add(statusBar);
         
@@ -243,9 +256,10 @@ public class RdosTester extends JPanel implements ActionListener
 	    			validDstIP2, validDstIP3, validDstIP4,
 	    			validPort);
 
-	    	// Create a PacketTransmitter and send the original packet.
-	    	PacketTransmitter2 transmit = new PacketTransmitter2();
-	    	transmit.send(originalPacket,1);
+
+	    	
+	    	//TODO use this to populate the combo box
+	    	transmit.send(originalPacket, networkInterfaceList.getSelectedIndex());
 
 	    	// Get the received packet
 	    	RdosPacket receivedPacket = transmit.receive();
@@ -279,7 +293,7 @@ public class RdosTester extends JPanel implements ActionListener
         //Create and set up the content pane.
         RdosTester newContentPane = new RdosTester();
         newContentPane.setOpaque(true); //content panes must be opaque
-        newContentPane.setPreferredSize(new Dimension(350, 125));
+        newContentPane.setPreferredSize(new Dimension(350, 160));
         frame.setContentPane(newContentPane);
 
         //Display the window.
