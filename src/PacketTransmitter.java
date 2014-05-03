@@ -132,11 +132,13 @@ public class PacketTransmitter {
 		// select specified network interface
 		PcapIf device = networkInterfaces.get(networkInterface);
 		
+		// get source MAC address
 		try {
 			
 			sourceMacAddress = device.getHardwareAddress();
 		} 
 		
+		// catch exception thrown if no network devices available
 		catch (IOException e) {
 			
 			System.err.println("unable to get network device");
@@ -146,11 +148,14 @@ public class PacketTransmitter {
 		// create JPacket for actual transmission
 		JPacket transmitPacket = new JMemoryPacket(JProtocol.ETHERNET_ID, transmitPacketContents.toString());
 		
+		// get ethernet header from packet
 		Ethernet ethernet = transmitPacket.getHeader(new Ethernet());
 		
-        ethernet.source(sourceMacAddress);
+        // set source MAC address of transmitPacket
+		ethernet.source(sourceMacAddress);
         
-        ethernet.destination(destinationMacAddress);
+        // set destination MAC address of transmitPacket
+		ethernet.destination(destinationMacAddress);
         
         ethernet.checksum(ethernet.calculateChecksum());
 		
