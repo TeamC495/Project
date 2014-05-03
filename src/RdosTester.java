@@ -70,32 +70,32 @@ public class RdosTester extends JPanel implements ActionListener
     	// Initialize the source IP address labels and textfields
 
     	srcIP1 = new JTextField(3);
-        srcIP1.setText("127");
+        srcIP1.setText("192");
     	srcIP1.addActionListener(this);
     	srcIP2 = new JTextField(3);
-        srcIP2.setText("0");
+        srcIP2.setText("168");
     	srcIP2.addActionListener(this);
     	srcIP3 = new JTextField(3);
-        srcIP3.setText("0");
+        srcIP3.setText("");
     	srcIP3.addActionListener(this);
     	srcIP4 = new JTextField(3);
-        srcIP4.setText("1");
+        srcIP4.setText("");
     	srcIP4.addActionListener(this);
 
     	
     	// Initialize the destination IP address labels and textfields
 
     	dstIP1 = new JTextField(3);
-        dstIP1.setText("127");
+        dstIP1.setText("5");
     	dstIP1.addActionListener(this);
     	dstIP2 = new JTextField(3);
-        dstIP2.setText("0");
+        dstIP2.setText("101");
     	dstIP2.addActionListener(this);
     	dstIP3 = new JTextField(3);
-        dstIP3.setText("0");
+        dstIP3.setText("146");
     	dstIP3.addActionListener(this);
     	dstIP4 = new JTextField(3);
-        dstIP4.setText("1");
+        dstIP4.setText("67");
     	dstIP4.addActionListener(this);
 
     	
@@ -124,7 +124,7 @@ public class RdosTester extends JPanel implements ActionListener
         // panel is so the transmit button will be right aligned.
         spacer = new JPanel(new FlowLayout(FlowLayout.LEFT, 300, 0));
         panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panel.setPreferredSize(new Dimension(350, 160));
+        panel.setPreferredSize(new Dimension(500, 400));
         
         //Add Components to the panel using the default FlowLayout.       
         panel.add(new JLabel("Source IP Address:"));
@@ -293,7 +293,7 @@ public class RdosTester extends JPanel implements ActionListener
         //Create and set up the content pane.
         RdosTester newContentPane = new RdosTester();
         newContentPane.setOpaque(true); //content panes must be opaque
-        newContentPane.setPreferredSize(new Dimension(350, 160));
+        newContentPane.setPreferredSize(new Dimension(500, 400));
         frame.setContentPane(newContentPane);
 
         //Display the window.
