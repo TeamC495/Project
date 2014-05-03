@@ -32,18 +32,11 @@ public class RdosPacket {
 	private String dstIp;
 	
 	// destination port
-	private String dstPort;
-	
-	// base getStatus request packet, includes IPv4 header, UDP header, UDP data
-	// private String packetBase = "ffffffffffff001fbc01b4db0800450000293cbd400080118c93c0a8580ac0a858186d386d380015319affffffff676574737461747573";
-	// private String packetBase = "ffffffffffff001fbc01b4db08004500002b60a100008011c166c0a85812ffffffff6d386d3b001762c3ffffffff676574696e666f20787878000000";
-	// private String packetBase = "d4ca6dccdd5174d02b35a3c408004500002b113a0000801171efc0a85816860018da6d386d3a0017c3e5ffffffff676574696e666f20787878";
-	
-	// getInfo
-	// private String packetBase = "d40xca6dccdd5174d02b0x35a3c408004500000x2b4d4c000080113d0x0fc0a858160565920x436d386d380017cb0x19ffffffff6765740x696e666f20787878"; 
+	private String dstPort;	 
 	
 	// getStatus
 	private String packetBase = "d4ca6dccdd5174d02b35a3c408004500002950a10000801139bcc0a85816056592436d386d3800153d3cffffffff676574737461747573";
+	
 	
 	// complete IP packet
 	private String completePacket;

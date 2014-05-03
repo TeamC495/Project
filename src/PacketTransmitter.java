@@ -23,11 +23,16 @@
 package teamC;
 
 // required for creating lists of interfaces, labels, etc
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 // for labeling packets received
 import java.util.Date;
+
+
+
+import javax.xml.bind.DatatypeConverter;
 
 // required for packet capture
 import org.jnetpcap.Pcap;
@@ -59,7 +64,11 @@ public class PacketTransmitter {
 	private StringBuilder errbuf = new StringBuilder(); 
 	
 	// hold list of available network adapters
-	private List<PcapIf>  networkInterfaces = new ArrayList<PcapIf>();	
+	private List<PcapIf>  networkInterfaces = new ArrayList<PcapIf>();
+	
+	private byte[] sourceMacAddress;
+	
+    private byte[] destinationMacAddress = DatatypeConverter.parseHexBinary("d4ca6dccdd51");
 	
 	// constructor; calls method to get available network interfaces
 	public PacketTransmitter() {
@@ -114,14 +123,36 @@ public class PacketTransmitter {
 		// return populated label list
 		return labelList;
 
-	} // end method getInterfaceLabels
+	} // end method getInterfaceLabels	
 	
 	// corrects packet checksums, sends packet to raw network interface
 	// captures and filters packets from raw network interface
 	public void send(RdosPacket transmitPacketContents, int networkInterface) {
 		
+		// select specified network interface
+		PcapIf device = networkInterfaces.get(networkInterface);
+		
+		try {
+			
+			sourceMacAddress = device.getHardwareAddress();
+		} 
+		
+		catch (IOException e) {
+			
+			System.err.println("unable to get network device");
+		
+		}  //Use device's MAC address as the source address
+		
 		// create JPacket for actual transmission
 		JPacket transmitPacket = new JMemoryPacket(JProtocol.ETHERNET_ID, transmitPacketContents.toString());
+		
+		Ethernet ethernet = transmitPacket.getHeader(new Ethernet());
+		
+        ethernet.source(sourceMacAddress);
+        
+        ethernet.destination(destinationMacAddress);
+        
+        ethernet.checksum(ethernet.calculateChecksum());
 		
 		// get IP header from packet
 		Ip4 ip = transmitPacket.getHeader(new Ip4());
@@ -141,8 +172,7 @@ public class PacketTransmitter {
 		// update packet state
 		transmitPacket.scan(Ethernet.ID);		
 		
-		// select specified network interface
-		PcapIf device = networkInterfaces.get(networkInterface);	
+
 		
 		// configure network stream for capture and transmission
 		int snaplen = 64 * 1024; // capture complete packets

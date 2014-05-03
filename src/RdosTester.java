@@ -62,7 +62,8 @@ public class RdosTester extends JPanel implements ActionListener
     private int validDstIP4;
     private int validPort;
 
-	private PacketTransmitter transmit = new PacketTransmitter();
+	
+    private PacketTransmitter transmit = new PacketTransmitter();
 
     // Constructor initializes gui components and layout.
     public RdosTester() 
