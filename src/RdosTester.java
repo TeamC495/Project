@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+import javax.xml.bind.DatatypeConverter;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -34,24 +35,60 @@ import java.util.ArrayList;
 public class RdosTester extends JPanel implements ActionListener
 {
 
-    private JButton button;
-    private JTextField srcIP1;
+    // transmit button
+	private JButton button;
+    
+	// source IP address fields
+	private JTextField srcIP1;
     private JTextField srcIP2;
     private JTextField srcIP3;
     private JTextField srcIP4;
+    
+    // destination IP address fields
     private JTextField dstIP1;
     private JTextField dstIP2;
     private JTextField dstIP3;
     private JTextField dstIP4;
+    
+    // destination port field
     private JTextField port;
+<<<<<<< HEAD
     private JComboBox networkInterfaceList;
 
+=======
+    
+    // gateway MAC field
+    private JTextField gMac1;
+    private JTextField gMac2;
+    private JTextField gMac3;
+    private JTextField gMac4;
+    private JTextField gMac5;
+    private JTextField gMac6;
+    
+    // selection of network interface
+    private JComboBox networkInterfaceList;
+
+    // status and misc labels
+>>>>>>> origin/29-April-DLR
     private JLabel statusBar;
     private Border raisedEtched;
     private String DOT = ".";
     private String message;
+    
+    // sub-panels
     private JPanel panel;
     private JPanel spacer;
+<<<<<<< HEAD
+=======
+    private JPanel panel1;
+    private JPanel panel2;
+    private JPanel panel3;
+    private JPanel panel4;
+    private JPanel panel5;
+    private JPanel panel6;
+    
+    // holds validated user inputs
+>>>>>>> origin/29-April-DLR
     private int validSrcIP1;
     private int validSrcIP2;
     private int validSrcIP3;
@@ -61,12 +98,21 @@ public class RdosTester extends JPanel implements ActionListener
     private int validDstIP3;
     private int validDstIP4;
     private int validPort;
+<<<<<<< HEAD
 
 	private PacketTransmitter2 transmit = new PacketTransmitter2();
+=======
+    private String validMac;
 
-    // Constructor initializes gui components and layout.
+	
+    // create instance of packetTransmitter, for sending and receiving packets
+    private PacketTransmitter transmit = new PacketTransmitter();
+>>>>>>> origin/29-April-DLR
+
+    // Constructor initializes GUI components and layout.
     public RdosTester() 
     {
+<<<<<<< HEAD
     	// Initialize the source IP address labels and textfields
 
     	srcIP1 = new JTextField(3);
@@ -100,12 +146,68 @@ public class RdosTester extends JPanel implements ActionListener
 
     	
     	// Initialize the port label and textfield
+=======
+    	// Initialize the source IP address labels, fields, and action listeners
+    	srcIP1 = new JTextField(3);
+        srcIP1.setText("192");
+    	srcIP1.addActionListener(this);
+    	srcIP2 = new JTextField(3);
+        srcIP2.setText("168");
+    	srcIP2.addActionListener(this);
+    	srcIP3 = new JTextField(3);
+        srcIP3.setText("");
+    	srcIP3.addActionListener(this);
+    	srcIP4 = new JTextField(3);
+        srcIP4.setText("");
+    	srcIP4.addActionListener(this);
+
+    	
+    	// Initialize the destination IP address labels, fields, and action listeners
+    	dstIP1 = new JTextField(3);
+        dstIP1.setText("5");
+        dstIP1.setEditable(false);
+    	dstIP1.addActionListener(this);
+    	dstIP2 = new JTextField(3);
+        dstIP2.setText("101");
+        dstIP2.setEditable(false);
+    	dstIP2.addActionListener(this);
+    	dstIP3 = new JTextField(3);
+        dstIP3.setText("146");
+        dstIP3.setEditable(false);
+    	dstIP3.addActionListener(this);
+    	dstIP4 = new JTextField(3);
+        dstIP4.setText("67");
+        dstIP4.setEditable(false);
+    	dstIP4.addActionListener(this);
+
+    	
+    	// Initialize the port labels, fields, and action listeners
+>>>>>>> origin/29-April-DLR
     	port = new JTextField(6);
         port.setText("27960");
     	port.addActionListener(this);
     	
+<<<<<<< HEAD
     	// Initialize the network interface combobox
     	// Get the available network interfaces
+=======
+    	// Initialize MAC labels, fields, and action listeners
+    	gMac1 = new JTextField(2);
+    	gMac1.addActionListener(this);
+    	gMac2 = new JTextField(2);
+    	gMac2.addActionListener(this);
+    	gMac3 = new JTextField(2);
+    	gMac3.addActionListener(this);
+    	gMac4 = new JTextField(2);
+    	gMac4.addActionListener(this);    	
+    	gMac5 = new JTextField(2);
+    	gMac5.addActionListener(this);
+    	gMac6 = new JTextField(2);
+    	gMac6.addActionListener(this);
+    	
+    	// Get labels for the available network interfaces
+    	// Initialize the network interface combo box
+>>>>>>> origin/29-April-DLR
     	ArrayList<String> networkInterfaces = transmit.getInterfaceLabels();
         networkInterfaceList = new JComboBox(networkInterfaces.toArray());
     	
@@ -118,16 +220,26 @@ public class RdosTester extends JPanel implements ActionListener
         statusBar = new JLabel();
         raisedEtched = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
         statusBar.setBorder(raisedEtched);
-        statusBar.setPreferredSize(new Dimension(340, 30));
+        statusBar.setPreferredSize(new Dimension(375, 30));
         
         // Create the panels to hold the components. The spacer
         // panel is so the transmit button will be right aligned.
+<<<<<<< HEAD
         spacer = new JPanel(new FlowLayout(FlowLayout.LEFT, 300, 0));
         panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panel.setPreferredSize(new Dimension(350, 160));
         
         //Add Components to the panel using the default FlowLayout.       
         panel.add(new JLabel("Source IP Address:"));
+=======
+        spacer = new JPanel(new FlowLayout(FlowLayout.LEFT, 300, 40));
+        panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel.setPreferredSize(new Dimension(400, 40));
+        
+        // add components for source IP fields
+        // uses the default FlowLayout.       
+        panel.add(new JLabel("Source IP Address:        "));
+>>>>>>> origin/29-April-DLR
         panel.add(srcIP1);
         panel.add(new JLabel(DOT));
         panel.add(srcIP2);
@@ -136,6 +248,7 @@ public class RdosTester extends JPanel implements ActionListener
         panel.add(new JLabel(DOT));
         panel.add(srcIP4);
         
+<<<<<<< HEAD
         panel.add(new JLabel("Destination IP Address:"));
         panel.add(dstIP1);
         panel.add(new JLabel(DOT));
@@ -153,29 +266,112 @@ public class RdosTester extends JPanel implements ActionListener
         
         panel.add(button);
         panel.add(spacer);
+=======
+        // init panel to hold destination IP fields 
+        panel1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel1.setPreferredSize(new Dimension(400, 40));
         
-        panel.add(statusBar);
+        // add components for destination IP fields 
+        panel1.add(new JLabel("Destination IP Address:"));
+        panel1.add(dstIP1);
+        panel1.add(new JLabel(DOT));
+        panel1.add(dstIP2);
+        panel1.add(new JLabel(DOT));
+        panel1.add(dstIP3);
+        panel1.add(new JLabel(DOT));
+        panel1.add(dstIP4);    
+
+        // init panel to hold gateway MAC fields 
+        panel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel2.setPreferredSize(new Dimension(400, 40));
+ 
+        // add components for gateway MAC fields
+        panel2.add(new JLabel("Gateway MAC Address:"));
+        panel2.add(gMac1);
+        panel2.add(new JLabel(DOT));
+        panel2.add(gMac2);
+        panel2.add(new JLabel(DOT));
+        panel2.add(gMac3);
+        panel2.add(new JLabel(DOT));
+        panel2.add(gMac4);
+        panel2.add(new JLabel(DOT));
+        panel2.add(gMac5);
+        panel2.add(new JLabel(DOT));
+        panel2.add(gMac6);
+
+        // init panel to hold destination port field 
+        panel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel3.setPreferredSize(new Dimension(400, 40));
+               
+        // add componenets for destination port field
+        panel3.add(new JLabel("Port:"));
+        panel3.add(port);
         
+        // init panel to hold network combo box 
+        panel4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel4.setPreferredSize(new Dimension(400, 40));
+        
+        // add label and network combo box
+        panel4.add(new JLabel("Network Interface:"));
+        panel4.add(networkInterfaceList);
+        
+        // init panel to hold button
+        panel5 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel5.setPreferredSize(new Dimension(400, 40));
+        
+        // add button and spacer
+        panel5.add(button);
+        panel5.add(spacer);
+        
+        // init panel to hold status bar
+        panel6 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel6.setPreferredSize(new Dimension(400, 40));
+>>>>>>> origin/29-April-DLR
+        
+        // add status bar
+        panel6.add(statusBar);
+        
+        // add sub-panels to main panel
         add(panel);
-    }
+        add(panel1);
+        add(panel2);
+        add(panel3);
+        add(panel4);
+        add(panel5);
+        add(panel6);
+    
+    } // end constructor
 
     /*
      * The actionPerformed method takes action depending upon
+<<<<<<< HEAD
      * which component in the gui is selected by the user. Currently
      * the Transmit button is the only component with an action
      * tied to it. 
      **/
     
+=======
+     * which component in the gui is selected by the user. 
+     **/    
+>>>>>>> origin/29-April-DLR
         
     public void actionPerformed(ActionEvent e) 
     {
               
+<<<<<<< HEAD
+=======
+    	// if button is clicked
+>>>>>>> origin/29-April-DLR
     	if(e.getSource() == button)
     	{	    	          
                 //clear error message
                 message = "";
                 statusBar.setText(message);
                 
+<<<<<<< HEAD
+=======
+                // validate source IP
+>>>>>>> origin/29-April-DLR
                 try {
 
                     message = "Please enter a valid Source IP Address";
@@ -194,14 +390,27 @@ public class RdosTester extends JPanel implements ActionListener
                         statusBar.setText(message);
                         return;
                     }
+<<<<<<< HEAD
                 }
+=======
+                
+                } // end try
+                
+>>>>>>> origin/29-April-DLR
                 //display error message if entered source IP address is not numeric
                 catch (NumberFormatException c) {
 
                     statusBar.setText(message);		
                     return;
+<<<<<<< HEAD
                 }
               
+=======
+                
+                } // end catch
+              
+                // validate destination IP
+>>>>>>> origin/29-April-DLR
                 try {
 
                     message = "Please enter a valid Destination IP Address";
@@ -220,14 +429,27 @@ public class RdosTester extends JPanel implements ActionListener
                         statusBar.setText(message);
                         return;
                     }
+<<<<<<< HEAD
                 }
+=======
+               
+                } // end try
+                
+>>>>>>> origin/29-April-DLR
                 //display error message if entered destination IP address is not numeric
                 catch (NumberFormatException c) {
 
                     statusBar.setText(message);		
                     return;
+<<<<<<< HEAD
                 }
                 
+=======
+                
+                } // end catch
+                
+                // validate port
+>>>>>>> origin/29-April-DLR
                 try {
 
                     message = "Please enter a port number between 0 and 65535";
@@ -242,12 +464,19 @@ public class RdosTester extends JPanel implements ActionListener
                         statusBar.setText(message);
                         return;
                     }
+<<<<<<< HEAD
                 }
+=======
+                
+                } // end try
+                
+>>>>>>> origin/29-April-DLR
                 //display error message if entered port is not numeric
                 catch (NumberFormatException c) {
 
                     statusBar.setText(message);		
                     return;
+<<<<<<< HEAD
                 }
                 
     		// Create the original packet. 
@@ -259,14 +488,76 @@ public class RdosTester extends JPanel implements ActionListener
 
 	    	
 	    	//TODO use this to populate the combo box
+=======
+                
+                } // end catch
+                
+                 
+                // validate gateway MAC
+                try {
+
+                    message = "Please enter a complete MAC address";
+                    statusBar.setForeground(Color.RED);
+                    
+                    // test for valid hex
+                    DatatypeConverter.parseHexBinary(gMac1.getText());
+                    DatatypeConverter.parseHexBinary(gMac2.getText());
+                    DatatypeConverter.parseHexBinary(gMac3.getText());
+                    DatatypeConverter.parseHexBinary(gMac4.getText());
+                    DatatypeConverter.parseHexBinary(gMac5.getText());
+                    DatatypeConverter.parseHexBinary(gMac6.getText());
+                    
+                    //concatenate text fields
+                    validMac = gMac1.getText() + gMac2.getText() + gMac3.getText() + gMac4.getText() + gMac5.getText() + gMac6.getText();
+                   
+                    // test for correct string length
+                    if (validMac.length() != 12){
+
+                        statusBar.setText(message);
+                        return;
+                    }
+                
+                } // end try
+                
+                //display error message if entered MAC is not valid hex
+                catch (IllegalArgumentException c) {
+
+                    statusBar.setText(message);		
+                    return;
+                
+                } // end catch
+                
+                // display error message if entered MAC is incomplete
+                catch (NullPointerException c) {
+
+                    statusBar.setText(message);		
+                    return;
+                
+                } // end catch
+                
+    		// Create the original packet; to be transmitted 
+	    	RdosPacket originalPacket = new RdosPacket(validSrcIP1, validSrcIP2,
+	    			validSrcIP3, validSrcIP4, validDstIP1,
+	    			validDstIP2, validDstIP3, validDstIP4,
+	    			validPort, validMac);
+	    	
+	    	// send the packet using the network interface selected in the combo box
+>>>>>>> origin/29-April-DLR
 	    	transmit.send(originalPacket, networkInterfaceList.getSelectedIndex());
 
 	    	// Get the received packet
 	    	RdosPacket receivedPacket = transmit.receive();
 
+<<<<<<< HEAD
 	    	// Create an analysis object
+=======
+	    	// Create an analysis object; sends transmitted and received packet for analysis
+>>>>>>> origin/29-April-DLR
 	    	Analysis analysis = new Analysis(receivedPacket.getPacketSize(), originalPacket.getPacketSize());
+	    	
+	    	// get ratio of received packet to transmitted packet
 	    	int percentage = analysis.getRatio();
+<<<<<<< HEAD
 //	    	System.out.println("Received size: " + receivedPacket.getPacketSize());	    	
 //	    	System.out.println("Original size: " + originalPacket.getPacketSize());
 
@@ -277,8 +568,31 @@ public class RdosTester extends JPanel implements ActionListener
     	}
         
     }
-    
+=======
 
+	    	// prepare ratio message for display
+	    	if(percentage < 100)
+	    		message = "Packet not Transmitted";
+	    	
+	    	else if(percentage == 100)
+	    		message = "Packet Transmitted. No Response from Server";
+	    	
+	    	else {
+	    		message = "Received Packet to Original Packet Ratio is " + 
+	    			Integer.toString(percentage) + "%";
+	    	}
+			
+	    	// display ratio
+	    	statusBar.setText(message);
+			
+	    	// dark green
+	    	statusBar.setForeground(new Color(0,100,0));
+    	
+    	} // end if
+        
+    } // end method actionPeformed
+>>>>>>> origin/29-April-DLR
+    
     /**
      * Create the GUI and show it.  For thread safety, 
      * this method should be invoked from the 
@@ -293,14 +607,20 @@ public class RdosTester extends JPanel implements ActionListener
         //Create and set up the content pane.
         RdosTester newContentPane = new RdosTester();
         newContentPane.setOpaque(true); //content panes must be opaque
+<<<<<<< HEAD
         newContentPane.setPreferredSize(new Dimension(350, 160));
+=======
+        newContentPane.setPreferredSize(new Dimension(400, 325));
+>>>>>>> origin/29-April-DLR
         frame.setContentPane(newContentPane);
 
         //Display the window.
         frame.pack();
         frame.setVisible(true);
-    }
+    
+    } // end method createAndShowGUI
 
+    // start the application
     public static void main(String[] args) {
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
@@ -309,5 +629,12 @@ public class RdosTester extends JPanel implements ActionListener
                 createAndShowGUI(); 
             }
         });
+<<<<<<< HEAD
     }
 }
+=======
+    
+    } // end method main
+
+} // end class RdosTester
+>>>>>>> origin/29-April-DLR

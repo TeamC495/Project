@@ -26,35 +26,44 @@ package teamC;
 public class RdosPacket {
 	
 	// source address
-	String srcIp;
+	private String srcIp;
 	
 	// destination address
-	String dstIp;
+	private String dstIp;
 	
 	// destination port
-	String dstPort;
+	private String dstPort;
 	
-	// base getStatus request packet, includes IPv4 header, UDP header, UDP data
-	String packetBase = "ffffffffffff001fbc01b4db0800450000293cbd400080118c93c0a8580ac0a858186d386d380015319affffffff676574737461747573";
+	// holds string hex representing gateway MAC
+	private String gatewayMac;
 	
-	// complete IP packet
-	String completePacket;
+	// ethernet frame containing representative "getStatus" message 
+	// private String packetBase = "d4ca6dccdd5174d02b35a3c408004500002950a10000801139bcc0a85816056592436d386d3800153d3cffffffff676574737461747573";	
 	
-	// size of packet in bytes
-	int packetSize;	
+	// "getInfo message" included to portability problems with getStatus
+	private String packetBase = "ffffffffffff00241dd16fb608004500002b7c5000008011a5bfc0a8580affffffff6d386d3b001762cbffffffff676574696e666f20787878000000";
+	
+	// holds ethernet frame with user-specified addresses, port, and gateway MAC
+	private String completePacket;
+	
+	// holds size of packet in bytes
+	private int packetSize;	
 	
 	// constructor requiring complete packet as String representing hex
 	// useful for received packets
 	public RdosPacket(String completePacket)
 	{
 		this.completePacket = completePacket;
+		
+		// calculate packet size in bytes, minus ethernet header
 		packetSizeCalc();
 	
 	}	// end Packet constructor
 
-	// constructor requiring source and destination address and port info
-	// useful for creating packets to transmit, requires checksums to be updated before transmission
-	public RdosPacket(int srcIP1, int srcIP2, int srcIP3, int srcIP4, int dstIP1, int dstIP2, int dstIP3, int dstIP4, int port)
+	// constructor requiring source and destination address and port info, as well as gateway MAC
+	// useful for creating packets to transmit
+	// requires checksums and source MAC to be updated before transmission
+	public RdosPacket(int srcIP1, int srcIP2, int srcIP3, int srcIP4, int dstIP1, int dstIP2, int dstIP3, int dstIP4, int port, String gatewayMac)
 	{
 		// convert source address to hex, add leading zeroes if necessary, concatenate
 		this.srcIp = formatOctet(srcIP1) + formatOctet(srcIP2) + formatOctet(srcIP3) + formatOctet(srcIP4);
@@ -65,6 +74,9 @@ public class RdosPacket {
 		// convert destination port to hex, add leading zeroes if necessary
 		this.dstPort = formatPort(port);
 		
+		// save gateway MAC
+		this.gatewayMac = gatewayMac;
+		
 		// overwrite packetBase IP and UDP header fields with user specified info
 		packetRewrite();
 		
@@ -73,10 +85,10 @@ public class RdosPacket {
 		
 	}  // end Packet constructor
 	
-	// calculate packet size in bytes
+	// calculate packet size in bytes, subtracts byte-count for ethernet header
 	private void packetSizeCalc() {
 		
-		packetSize = completePacket.length() / 2;
+		packetSize = (completePacket.length() / 2) - 14;
 		
 	}  // end method packetSizeCalc	
 	
@@ -97,7 +109,8 @@ public class RdosPacket {
 	// overwrite packetBase IP and UDP header fields with user specified info
 	private void packetRewrite()
 	{
-		completePacket = packetBase.substring(0,52) + srcIp + dstIp + packetBase.substring(68,72) + dstPort + packetBase.substring(76,packetBase.length());
+		completePacket = gatewayMac + packetBase.substring(12,52) + srcIp + dstIp + packetBase.substring(68,72) 
+				         + dstPort + packetBase.substring(76,packetBase.length());
 		
 	} // end method packetRewrite
 	
@@ -107,6 +120,13 @@ public class RdosPacket {
 		return packetSize;
 	
 	} // end method getPacketSize
+	
+	// return destination port; useful for filtering captures
+	public String getPort() {
+		
+		return completePacket.substring(73,76);
+	
+	} // end method getPort
 	
 	// returns completePacket as string representation of packet object 	
 	public String toString()
