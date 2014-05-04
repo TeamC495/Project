@@ -383,7 +383,7 @@ public class RdosTester extends JPanel implements ActionListener
                 
                 } // end try
                 
-                //display error message if entered MAC is incomplete
+                //display error message if entered MAC is not valid hex
                 catch (IllegalArgumentException c) {
 
                     statusBar.setText(message);		
@@ -391,6 +391,7 @@ public class RdosTester extends JPanel implements ActionListener
                 
                 } // end catch
                 
+                // display error message if entered MAC is incomplete
                 catch (NullPointerException c) {
 
                     statusBar.setText(message);		
@@ -417,8 +418,16 @@ public class RdosTester extends JPanel implements ActionListener
 	    	int percentage = analysis.getRatio();
 
 	    	// prepare ratio message for display
-	    	message = "Received Packet to Original Packet Ratio is " + 
+	    	if(percentage < 100)
+	    		message = "Packet not Transmitted";
+	    	
+	    	else if(percentage == 100)
+	    		message = "Packet Transmitted. No Response from Server";
+	    	
+	    	else {
+	    		message = "Received Packet to Original Packet Ratio is " + 
 	    			Integer.toString(percentage) + "%";
+	    	}
 			
 	    	// display ratio
 	    	statusBar.setText(message);
@@ -430,27 +439,6 @@ public class RdosTester extends JPanel implements ActionListener
         
     } // end method actionPeformed
     
-//    private void validateMAC() {
-//    	
-//        // validate gateway MAC
-//
-//
-//            message = "Please enter a complete MAC address";
-//            statusBar.setForeground(Color.RED);
-//            
-//            //concatenate text fields
-//            validMac = gMac1.getText() + gMac2.getText() + gMac3.getText() + gMac4.getText() + gMac5.getText() + gMac6.getText();
-//           
-//            //display error message if entered port is not valid
-//            if (validMac.length() != 12){
-//
-//                statusBar.setText(message);
-//                return;    }       
-//
-//    	
-//    } // end method validateMac
-    
-
     /**
      * Create the GUI and show it.  For thread safety, 
      * this method should be invoked from the 
