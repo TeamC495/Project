@@ -10,6 +10,7 @@ static const unsigned char pkt35[60] = {
 0x78, 0x00, 0x00, 0x00                          /* x... */
 };
 
+<<<<<<< HEAD
 
 ff, ff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x24
 1d, d1, 0x6f, 0xb6, 0x08, 0x00, 0x45, 0x00
@@ -21,3 +22,6 @@ ff, ff, 0x6d, 0x38, 0x6d, 0x3b, 0x00, 0x17
 78, 00, 0x00, 0x00                        
 
 
+=======
+ffffffffffff00241dd16fb608004500002b7c5000008011a5bfc0a8580affffffff6d386d3b001762cbffffffff676574696e666f20787878000000        
+>>>>>>> 102eddf4fd728acb1035e2e6a24b474a643f91be
