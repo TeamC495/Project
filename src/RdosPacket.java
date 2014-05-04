@@ -32,7 +32,10 @@ public class RdosPacket {
 	private String dstIp;
 	
 	// destination port
-	private String dstPort;	 
+	private String dstPort;
+	
+	// gateway MAC
+	private String gatewayMac;
 	
 	// getStatus
 	private String packetBase = "d4ca6dccdd5174d02b35a3c408004500002950a10000801139bcc0a85816056592436d386d3800153d3cffffffff676574737461747573";
@@ -55,7 +58,7 @@ public class RdosPacket {
 
 	// constructor requiring source and destination address and port info
 	// useful for creating packets to transmit, requires checksums to be updated before transmission
-	public RdosPacket(int srcIP1, int srcIP2, int srcIP3, int srcIP4, int dstIP1, int dstIP2, int dstIP3, int dstIP4, int port)
+	public RdosPacket(int srcIP1, int srcIP2, int srcIP3, int srcIP4, int dstIP1, int dstIP2, int dstIP3, int dstIP4, int port, String gatewayMac)
 	{
 		// convert source address to hex, add leading zeroes if necessary, concatenate
 		this.srcIp = formatOctet(srcIP1) + formatOctet(srcIP2) + formatOctet(srcIP3) + formatOctet(srcIP4);
@@ -65,6 +68,9 @@ public class RdosPacket {
 		
 		// convert destination port to hex, add leading zeroes if necessary
 		this.dstPort = formatPort(port);
+		
+		// save gateway MAC
+		this.gatewayMac = gatewayMac;
 		
 		// overwrite packetBase IP and UDP header fields with user specified info
 		packetRewrite();
@@ -98,7 +104,7 @@ public class RdosPacket {
 	// overwrite packetBase IP and UDP header fields with user specified info
 	private void packetRewrite()
 	{
-		completePacket = packetBase.substring(0,52) + srcIp + dstIp + packetBase.substring(68,72) + dstPort + packetBase.substring(76,packetBase.length());
+		completePacket = gatewayMac + packetBase.substring(12,52) + srcIp + dstIp + packetBase.substring(68,72) + dstPort + packetBase.substring(76,packetBase.length());
 		
 	} // end method packetRewrite
 	

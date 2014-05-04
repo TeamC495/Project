@@ -68,7 +68,7 @@ public class PacketTransmitter {
 	
 	private byte[] sourceMacAddress;
 	
-    private byte[] destinationMacAddress = DatatypeConverter.parseHexBinary("d4ca6dccdd51");
+    //private byte[] destinationMacAddress = DatatypeConverter.parseHexBinary("d4ca6dccdd51");
 	
 	// constructor; calls method to get available network interfaces
 	public PacketTransmitter() {
@@ -155,7 +155,7 @@ public class PacketTransmitter {
 		ethernet.source(sourceMacAddress);
         
         // set destination MAC address of transmitPacket
-		ethernet.destination(destinationMacAddress);
+		//ethernet.destination(destinationMacAddress);
         
         ethernet.checksum(ethernet.calculateChecksum());
 		

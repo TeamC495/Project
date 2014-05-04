@@ -34,24 +34,49 @@ import java.util.ArrayList;
 public class RdosTester extends JPanel implements ActionListener
 {
 
-    private JButton button;
-    private JTextField srcIP1;
+    // transmit button
+	private JButton button;
+    
+	// source IP address fields
+	private JTextField srcIP1;
     private JTextField srcIP2;
     private JTextField srcIP3;
     private JTextField srcIP4;
+    
+    // destination IP address fields
     private JTextField dstIP1;
     private JTextField dstIP2;
     private JTextField dstIP3;
     private JTextField dstIP4;
+    
+    // destination port field
     private JTextField port;
+    
+    // gateway MAC field
+    private JTextField gMac1;
+    private JTextField gMac2;
+    private JTextField gMac3;
+    private JTextField gMac4;
+    private JTextField gMac5;
+    private JTextField gMac6;
+    
+    // selection of network interface
     private JComboBox networkInterfaceList;
 
     private JLabel statusBar;
     private Border raisedEtched;
     private String DOT = ".";
     private String message;
+    
     private JPanel panel;
     private JPanel spacer;
+    private JPanel panel1;
+    private JPanel panel2;
+    private JPanel panel3;
+    private JPanel panel4;
+    private JPanel panel5;
+    private JPanel panel6;
+    
     private int validSrcIP1;
     private int validSrcIP2;
     private int validSrcIP3;
@@ -61,6 +86,7 @@ public class RdosTester extends JPanel implements ActionListener
     private int validDstIP3;
     private int validDstIP4;
     private int validPort;
+    private String validMac;
 
 	
     private PacketTransmitter transmit = new PacketTransmitter();
@@ -105,6 +131,20 @@ public class RdosTester extends JPanel implements ActionListener
         port.setText("27960");
     	port.addActionListener(this);
     	
+    	// Initialize MAC fields and add action listeners
+    	gMac1 = new JTextField(2);
+    	gMac1.addActionListener(this);
+    	gMac2 = new JTextField(2);
+    	gMac2.addActionListener(this);
+    	gMac3 = new JTextField(2);
+    	gMac3.addActionListener(this);
+    	gMac4 = new JTextField(2);
+    	gMac4.addActionListener(this);    	
+    	gMac5 = new JTextField(2);
+    	gMac5.addActionListener(this);
+    	gMac6 = new JTextField(2);
+    	gMac6.addActionListener(this);
+    	
     	// Initialize the network interface combobox
     	// Get the available network interfaces
     	ArrayList<String> networkInterfaces = transmit.getInterfaceLabels();
@@ -119,16 +159,16 @@ public class RdosTester extends JPanel implements ActionListener
         statusBar = new JLabel();
         raisedEtched = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
         statusBar.setBorder(raisedEtched);
-        statusBar.setPreferredSize(new Dimension(340, 30));
+        statusBar.setPreferredSize(new Dimension(375, 30));
         
         // Create the panels to hold the components. The spacer
         // panel is so the transmit button will be right aligned.
-        spacer = new JPanel(new FlowLayout(FlowLayout.LEFT, 300, 0));
+        spacer = new JPanel(new FlowLayout(FlowLayout.LEFT, 300, 40));
         panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panel.setPreferredSize(new Dimension(500, 400));
+        panel.setPreferredSize(new Dimension(400, 40));
         
         //Add Components to the panel using the default FlowLayout.       
-        panel.add(new JLabel("Source IP Address:"));
+        panel.add(new JLabel("Source IP Address:        "));
         panel.add(srcIP1);
         panel.add(new JLabel(DOT));
         panel.add(srcIP2);
@@ -137,27 +177,66 @@ public class RdosTester extends JPanel implements ActionListener
         panel.add(new JLabel(DOT));
         panel.add(srcIP4);
         
-        panel.add(new JLabel("Destination IP Address:"));
-        panel.add(dstIP1);
-        panel.add(new JLabel(DOT));
-        panel.add(dstIP2);
-        panel.add(new JLabel(DOT));
-        panel.add(dstIP3);
-        panel.add(new JLabel(DOT));
-        panel.add(dstIP4);
+        //spacer = new JPanel(new FlowLayout(FlowLayout.LEFT, 300, 0));
+        panel1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel1.setPreferredSize(new Dimension(400, 40));
+        
+        panel1.add(new JLabel("Destination IP Address:"));
+        panel1.add(dstIP1);
+        panel1.add(new JLabel(DOT));
+        panel1.add(dstIP2);
+        panel1.add(new JLabel(DOT));
+        panel1.add(dstIP3);
+        panel1.add(new JLabel(DOT));
+        panel1.add(dstIP4);    
+
+        
+        panel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel2.setPreferredSize(new Dimension(400, 40));
+        
+        panel2.add(new JLabel("Gateway MAC Address:"));
+        panel2.add(gMac1);
+        panel2.add(new JLabel(DOT));
+        panel2.add(gMac2);
+        panel2.add(new JLabel(DOT));
+        panel2.add(gMac3);
+        panel2.add(new JLabel(DOT));
+        panel2.add(gMac4);
+        panel2.add(new JLabel(DOT));
+        panel2.add(gMac5);
+        panel2.add(new JLabel(DOT));
+        panel2.add(gMac6);
+        
+        panel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel3.setPreferredSize(new Dimension(400, 40));
                
-        panel.add(new JLabel("Port:"));
-        panel.add(port);
+        panel3.add(new JLabel("Port:"));
+        panel3.add(port);
         
-        panel.add(new JLabel("Network Interface:"));
-        panel.add(networkInterfaceList);
+        panel4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel4.setPreferredSize(new Dimension(400, 40));
         
-        panel.add(button);
-        panel.add(spacer);
+        panel4.add(new JLabel("Network Interface:"));
+        panel4.add(networkInterfaceList);
         
-        panel.add(statusBar);
+        panel5 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel5.setPreferredSize(new Dimension(400, 40));
+        
+        panel5.add(button);
+        panel5.add(spacer);
+        
+        panel6 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel6.setPreferredSize(new Dimension(400, 40));
+        
+        panel6.add(statusBar);
         
         add(panel);
+        add(panel1);
+        add(panel2);
+        add(panel3);
+        add(panel4);
+        add(panel5);
+        add(panel6);
     }
 
     /*
@@ -251,11 +330,34 @@ public class RdosTester extends JPanel implements ActionListener
                     return;
                 }
                 
+                try {
+
+                    message = "Please enter a complete MAC address";
+                    statusBar.setForeground(Color.RED);
+                    
+                    //convert entered port text to an int
+                    validMac = gMac1.getText() + gMac2.getText() + gMac3.getText() + gMac4.getText() + gMac5.getText() + gMac6.getText();
+                   
+                    //display error message if entered port is not valid
+                    if (validMac.length() != 12){
+
+                        statusBar.setText(message);
+                        return;
+                    }
+                }
+                
+                //display error message if entered MAC is incomplete
+                catch (NullPointerException c) {
+
+                    statusBar.setText(message);		
+                    return;
+                }
+                
     		// Create the original packet. 
 	    	RdosPacket originalPacket = new RdosPacket(validSrcIP1, validSrcIP2,
 	    			validSrcIP3, validSrcIP4, validDstIP1,
 	    			validDstIP2, validDstIP3, validDstIP4,
-	    			validPort);
+	    			validPort, validMac);
 
 
 	    	
@@ -294,7 +396,7 @@ public class RdosTester extends JPanel implements ActionListener
         //Create and set up the content pane.
         RdosTester newContentPane = new RdosTester();
         newContentPane.setOpaque(true); //content panes must be opaque
-        newContentPane.setPreferredSize(new Dimension(500, 400));
+        newContentPane.setPreferredSize(new Dimension(400, 325));
         frame.setContentPane(newContentPane);
 
         //Display the window.
