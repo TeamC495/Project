@@ -117,15 +117,19 @@ public class RdosTester extends JPanel implements ActionListener
     	// Initialize the destination IP address labels, fields, and action listeners
     	dstIP1 = new JTextField(3);
         dstIP1.setText("5");
+        dstIP1.setEditable(false);
     	dstIP1.addActionListener(this);
     	dstIP2 = new JTextField(3);
         dstIP2.setText("101");
+        dstIP2.setEditable(false);
     	dstIP2.addActionListener(this);
     	dstIP3 = new JTextField(3);
         dstIP3.setText("146");
+        dstIP3.setEditable(false);
     	dstIP3.addActionListener(this);
     	dstIP4 = new JTextField(3);
         dstIP4.setText("67");
+        dstIP4.setEditable(false);
     	dstIP4.addActionListener(this);
 
     	
