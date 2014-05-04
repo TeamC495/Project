@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+import javax.xml.bind.DatatypeConverter;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -355,16 +356,25 @@ public class RdosTester extends JPanel implements ActionListener
                 
                 } // end catch
                 
+                 
                 // validate gateway MAC
                 try {
 
                     message = "Please enter a complete MAC address";
                     statusBar.setForeground(Color.RED);
                     
+                    // test for valid hex
+                    DatatypeConverter.parseHexBinary(gMac1.getText());
+                    DatatypeConverter.parseHexBinary(gMac2.getText());
+                    DatatypeConverter.parseHexBinary(gMac3.getText());
+                    DatatypeConverter.parseHexBinary(gMac4.getText());
+                    DatatypeConverter.parseHexBinary(gMac5.getText());
+                    DatatypeConverter.parseHexBinary(gMac6.getText());
+                    
                     //concatenate text fields
                     validMac = gMac1.getText() + gMac2.getText() + gMac3.getText() + gMac4.getText() + gMac5.getText() + gMac6.getText();
                    
-                    //display error message if entered port is not valid
+                    // test for correct string length
                     if (validMac.length() != 12){
 
                         statusBar.setText(message);
@@ -374,7 +384,14 @@ public class RdosTester extends JPanel implements ActionListener
                 } // end try
                 
                 //display error message if entered MAC is incomplete
-                catch (NumberFormatException c) {
+                catch (IllegalArgumentException c) {
+
+                    statusBar.setText(message);		
+                    return;
+                
+                } // end catch
+                
+                catch (NullPointerException c) {
 
                     statusBar.setText(message);		
                     return;
@@ -412,6 +429,26 @@ public class RdosTester extends JPanel implements ActionListener
     	} // end if
         
     } // end method actionPeformed
+    
+//    private void validateMAC() {
+//    	
+//        // validate gateway MAC
+//
+//
+//            message = "Please enter a complete MAC address";
+//            statusBar.setForeground(Color.RED);
+//            
+//            //concatenate text fields
+//            validMac = gMac1.getText() + gMac2.getText() + gMac3.getText() + gMac4.getText() + gMac5.getText() + gMac6.getText();
+//           
+//            //display error message if entered port is not valid
+//            if (validMac.length() != 12){
+//
+//                statusBar.setText(message);
+//                return;    }       
+//
+//    	
+//    } // end method validateMac
     
 
     /**
