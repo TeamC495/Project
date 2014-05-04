@@ -22,17 +22,15 @@
 
 package teamC;
 
-// required for creating lists of interfaces, labels, etc
+// required for possible IO Exception
 import java.io.IOException;
+
+// required for creating lists of interfaces, labels, etc
 import java.util.ArrayList;
 import java.util.List;
 
 // for labeling packets received
 import java.util.Date;
-
-
-
-import javax.xml.bind.DatatypeConverter;
 
 // required for packet capture
 import org.jnetpcap.Pcap;
@@ -57,7 +55,7 @@ import org.jnetpcap.PcapBpfProgram;
 // allows transmission and receipt of raw packets
 public class PacketTransmitter {
 	
-	// represents typical status response packet
+	// init string for response packet
 	private String statusResponse = "empty";	
 	
 	// For any error msgs
@@ -66,18 +64,17 @@ public class PacketTransmitter {
 	// hold list of available network adapters
 	private List<PcapIf>  networkInterfaces = new ArrayList<PcapIf>();
 	
+	// hold source MAC
 	private byte[] sourceMacAddress;
 	
-    //private byte[] destinationMacAddress = DatatypeConverter.parseHexBinary("d4ca6dccdd51");
+	// max time to allow transmission and capture; in milliseconds
+	private static final int TIMEOUT = 5 * 1000;
 	
 	// constructor; calls method to get available network interfaces
 	public PacketTransmitter() {
 		
 		// enumerate network interfaces
-		getNetworkInterfaces();		
-		
-		// create array of interface labels
-		// getInterfaceLabels();
+		getNetworkInterfaces();
 		
 	} // end constructor PacketTransmitter
 	
@@ -135,15 +132,16 @@ public class PacketTransmitter {
 		// get source MAC address
 		try {
 			
+			// Use device's MAC address as the source address
 			sourceMacAddress = device.getHardwareAddress();
 		} 
 		
 		// catch exception thrown if no network devices available
 		catch (IOException e) {
 			
-			System.err.println("unable to get network device");
+			System.err.println("Unable to get network device");
 		
-		}  //Use device's MAC address as the source address
+		}  
 		
 		// create JPacket for actual transmission
 		JPacket transmitPacket = new JMemoryPacket(JProtocol.ETHERNET_ID, transmitPacketContents.toString());
@@ -154,9 +152,7 @@ public class PacketTransmitter {
         // set source MAC address of transmitPacket
 		ethernet.source(sourceMacAddress);
         
-        // set destination MAC address of transmitPacket
-		//ethernet.destination(destinationMacAddress);
-        
+		// fix ethernet checksum
         ethernet.checksum(ethernet.calculateChecksum());
 		
 		// get IP header from packet
@@ -171,26 +167,23 @@ public class PacketTransmitter {
 		// fix UDP checksum
 		udp.checksum(udp.calculateChecksum());
 		
-		// set filter using port info from UDP header
+		// update packet state with checksums and changes
+		transmitPacket.scan(Ethernet.ID);
+		
+		// set capture filter using port info from UDP header
 		String filterString = "port " + String.valueOf(udp.destination() + " && udp");
-		
-		// update packet state
-		transmitPacket.scan(Ethernet.ID);		
-		
-
 		
 		// configure network stream for capture and transmission
 		int snaplen = 64 * 1024; // capture complete packets
-		int flags = Pcap.MODE_PROMISCUOUS; // capture all packets
-		int timeout = 5 * 1000; // seconds in milliseconds; when to stop capture
+		int flags = Pcap.MODE_PROMISCUOUS; // capture all packets, even packets not addressed to this machine
 		int dataLinkType = PcapDLT.CONST_EN10MB; // ethernet 10/100/1000 MB
 		int optimize = 0;         // 0 = false; do not optimize capture
 		int netmask = 0xFFFFFF00; // 255.255.255.0; only capture packets available in this subnet
 		
-		// init a filter "program"; will be compiled
+		// declare a filter "program"; will be compiled
 		PcapBpfProgram program = new PcapBpfProgram();
 		
-		// compile filter
+		// compile filter; "program" is initialized by this function
 		if (Pcap.compileNoPcap(snaplen, dataLinkType, program, filterString, optimize, netmask) != Pcap.OK) {
 			System.err.println("unable to compile filter");
 			return;
@@ -200,15 +193,13 @@ public class PacketTransmitter {
 		JPacketHandler<String> jpacketHandler = createPacketHandler();
 		
 		// begin packet capture on network
-		Pcap pcap = Pcap.openLive(device.getName(), snaplen, flags, timeout, errbuf);		
+		Pcap pcap = Pcap.openLive(device.getName(), snaplen, flags, TIMEOUT, errbuf);		
 
 		// apply filter
 		if (pcap.setFilter(program) != Pcap.OK) {
 			System.err.println(pcap.getErr());
 			return;		
 		}
-		
-		System.out.println("Filter set !!! : " + filterString);
 				
 		// transmit packet
 		if (pcap.sendPacket(transmitPacket) != Pcap.OK) {
@@ -230,6 +221,7 @@ public class PacketTransmitter {
 		// passes receive packets to formatter method
 		JPacketHandler<String> jpacketHandler = new JPacketHandler<String>() {
 
+			// required method for JPacketHandler, actually processes captured packet
 			public void nextPacket(JPacket receivePacket, String user) {
 
 				// display packet info
@@ -282,7 +274,7 @@ public class PacketTransmitter {
 		// create RdosPacket object using contents of captured packet
 		RdosPacket receivePacket = new RdosPacket(statusResponse);
 		
-		System.err.println("\nReceive packet:\n" + receivePacket.toString() + "\n");
+		// System.err.println("\nReceive packet:\n" + receivePacket.toString() + "\n");
 		
 		// return object
 		return receivePacket;
