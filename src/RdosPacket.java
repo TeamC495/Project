@@ -34,17 +34,16 @@ public class RdosPacket {
 	// destination port
 	private String dstPort;
 	
-	// gateway MAC
+	// holds string hex representing gateway MAC
 	private String gatewayMac;
 	
-	// getStatus
-	private String packetBase = "d4ca6dccdd5174d02b35a3c408004500002950a10000801139bcc0a85816056592436d386d3800153d3cffffffff676574737461747573";
+	// ethernet frame containing representative "getStatus" message 
+	private String packetBase = "d4ca6dccdd5174d02b35a3c408004500002950a10000801139bcc0a85816056592436d386d3800153d3cffffffff676574737461747573";	
 	
-	
-	// complete IP packet
+	// holds ethernet frame with user-specified addresses, port, and gateway MAC
 	private String completePacket;
 	
-	// size of packet in bytes
+	// holds size of packet in bytes
 	private int packetSize;	
 	
 	// constructor requiring complete packet as String representing hex
@@ -52,12 +51,15 @@ public class RdosPacket {
 	public RdosPacket(String completePacket)
 	{
 		this.completePacket = completePacket;
+		
+		// calculate packet size in bytes, minus ethernet header
 		packetSizeCalc();
 	
 	}	// end Packet constructor
 
-	// constructor requiring source and destination address and port info
-	// useful for creating packets to transmit, requires checksums to be updated before transmission
+	// constructor requiring source and destination address and port info, as well as gateway MAC
+	// useful for creating packets to transmit
+	// requires checksums and source MAC to be updated before transmission
 	public RdosPacket(int srcIP1, int srcIP2, int srcIP3, int srcIP4, int dstIP1, int dstIP2, int dstIP3, int dstIP4, int port, String gatewayMac)
 	{
 		// convert source address to hex, add leading zeroes if necessary, concatenate
@@ -104,7 +106,8 @@ public class RdosPacket {
 	// overwrite packetBase IP and UDP header fields with user specified info
 	private void packetRewrite()
 	{
-		completePacket = gatewayMac + packetBase.substring(12,52) + srcIp + dstIp + packetBase.substring(68,72) + dstPort + packetBase.substring(76,packetBase.length());
+		completePacket = gatewayMac + packetBase.substring(12,52) + srcIp + dstIp + packetBase.substring(68,72) 
+				         + dstPort + packetBase.substring(76,packetBase.length());
 		
 	} // end method packetRewrite
 	
@@ -115,12 +118,12 @@ public class RdosPacket {
 	
 	} // end method getPacketSize
 	
-	// return packet size
+	// return destination port; useful for filtering captures
 	public String getPort() {
 		
 		return completePacket.substring(73,76);
 	
-	} // end method getPacketSize
+	} // end method getPort
 	
 	// returns completePacket as string representation of packet object 	
 	public String toString()
