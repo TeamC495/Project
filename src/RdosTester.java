@@ -12,6 +12,7 @@ import javax.swing.border.EtchedBorder;
 import javax.xml.bind.DatatypeConverter;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -36,7 +37,7 @@ public class RdosTester extends JPanel implements ActionListener
 {
 
     // transmit button
-	private JButton button;
+	private static JButton button;
     
 	// source IP address fields
 	private JTextField srcIP1;
@@ -94,7 +95,7 @@ public class RdosTester extends JPanel implements ActionListener
 
 	
     // create instance of packetTransmitter, for sending and receiving packets
-    private PacketTransmitter transmit = new PacketTransmitter();
+//    private PacketTransmitter transmit = new PacketTransmitter();
 
     // Constructor initializes GUI components and layout.
     public RdosTester() 
@@ -118,18 +119,22 @@ public class RdosTester extends JPanel implements ActionListener
     	dstIP1 = new JTextField(3);
         dstIP1.setText("5");
         dstIP1.setEditable(false);
+        dstIP1.setFocusable(false);
     	dstIP1.addActionListener(this);
     	dstIP2 = new JTextField(3);
         dstIP2.setText("101");
         dstIP2.setEditable(false);
+        dstIP2.setFocusable(false);
     	dstIP2.addActionListener(this);
     	dstIP3 = new JTextField(3);
         dstIP3.setText("146");
         dstIP3.setEditable(false);
+        dstIP3.setFocusable(false);
     	dstIP3.addActionListener(this);
     	dstIP4 = new JTextField(3);
         dstIP4.setText("67");
         dstIP4.setEditable(false);
+        dstIP4.setFocusable(false);
     	dstIP4.addActionListener(this);
 
     	
@@ -154,12 +159,13 @@ public class RdosTester extends JPanel implements ActionListener
     	
     	// Get labels for the available network interfaces
     	// Initialize the network interface combo box
-    	ArrayList<String> networkInterfaces = transmit.getInterfaceLabels();
+    	ArrayList<String> networkInterfaces = new PacketTransmitter().getInterfaceLabels();
         networkInterfaceList = new JComboBox(networkInterfaces.toArray());
     	
     	// Initialize the button
         button = new JButton("Transmit Packet");
         button.setToolTipText("Click this button to transmit the packet.");
+        
         button.addActionListener(this);
 
         // Initialize the status bar
@@ -266,13 +272,16 @@ public class RdosTester extends JPanel implements ActionListener
         
     public void actionPerformed(ActionEvent e) 
     {
-              
     	// if button is clicked
     	if(e.getSource() == button)
-    	{	    	          
-                //clear error message
-                message = "";
-                statusBar.setText(message);
+    	{	    	
+    		message = "";
+    		statusBar.setText(message);
+
+        	System.out.println("my label should be clear");
+        	
+    		Cursor hourGlass = new Cursor(Cursor.WAIT_CURSOR);
+    		setCursor(hourGlass);
                 
                 // validate source IP
                 try {
@@ -291,6 +300,9 @@ public class RdosTester extends JPanel implements ActionListener
                             || validSrcIP4 < 0 || validSrcIP4 > 255){
 
                         statusBar.setText(message);
+                        
+                        // Processing is finished. Set the cursor back to normal.
+            	    	setCursorToNormal();
                         return;
                     }
                 
@@ -299,7 +311,10 @@ public class RdosTester extends JPanel implements ActionListener
                 //display error message if entered source IP address is not numeric
                 catch (NumberFormatException c) {
 
-                    statusBar.setText(message);		
+                    statusBar.setText(message);	
+                    
+                    // Processing is finished. Set the cursor back to normal.
+        	    	setCursorToNormal();
                     return;
                 
                 } // end catch
@@ -321,6 +336,9 @@ public class RdosTester extends JPanel implements ActionListener
                             || validDstIP4 < 0 || validDstIP4 > 255){
 
                         statusBar.setText(message);
+                        
+                        // Processing is finished. Set the cursor back to normal.
+            	    	setCursorToNormal();
                         return;
                     }
                
@@ -330,6 +348,9 @@ public class RdosTester extends JPanel implements ActionListener
                 catch (NumberFormatException c) {
 
                     statusBar.setText(message);		
+                    
+                    // Processing is finished. Set the cursor back to normal.
+        	    	setCursorToNormal();
                     return;
                 
                 } // end catch
@@ -347,6 +368,9 @@ public class RdosTester extends JPanel implements ActionListener
                     if (validPort < 0 || validPort > 65535){
 
                         statusBar.setText(message);
+                        
+                        // Processing is finished. Set the cursor back to normal.
+            	    	setCursorToNormal();
                         return;
                     }
                 
@@ -355,7 +379,10 @@ public class RdosTester extends JPanel implements ActionListener
                 //display error message if entered port is not numeric
                 catch (NumberFormatException c) {
 
-                    statusBar.setText(message);		
+                    statusBar.setText(message);	
+                    
+                    // Processing is finished. Set the cursor back to normal.
+        	    	setCursorToNormal();
                     return;
                 
                 } // end catch
@@ -382,6 +409,9 @@ public class RdosTester extends JPanel implements ActionListener
                     if (validMac.length() != 12){
 
                         statusBar.setText(message);
+                        
+                        // Processing is finished. Set the cursor back to normal.
+            	    	setCursorToNormal();
                         return;
                     }
                 
@@ -390,7 +420,10 @@ public class RdosTester extends JPanel implements ActionListener
                 //display error message if entered MAC is not valid hex
                 catch (IllegalArgumentException c) {
 
-                    statusBar.setText(message);		
+                    statusBar.setText(message);	
+                    
+                    // Processing is finished. Set the cursor back to normal.
+        	    	setCursorToNormal();
                     return;
                 
                 } // end catch
@@ -398,7 +431,10 @@ public class RdosTester extends JPanel implements ActionListener
                 // display error message if entered MAC is incomplete
                 catch (NullPointerException c) {
 
-                    statusBar.setText(message);		
+                    statusBar.setText(message);	
+                    
+                    // Processing is finished. Set the cursor back to normal.
+        	    	setCursorToNormal();
                     return;
                 
                 } // end catch
@@ -409,6 +445,7 @@ public class RdosTester extends JPanel implements ActionListener
 	    			validDstIP2, validDstIP3, validDstIP4,
 	    			validPort, validMac);
 	    	
+	    	PacketTransmitter transmit = new PacketTransmitter();
 	    	// send the packet using the network interface selected in the combo box
 	    	transmit.send(originalPacket, networkInterfaceList.getSelectedIndex());
 
@@ -423,25 +460,41 @@ public class RdosTester extends JPanel implements ActionListener
 
 	    	// prepare ratio message for display
 	    	if(percentage < 100)
-	    		message = "Packet not Transmitted";
+	    	{
+	    		message = "Packet not Transmitted. Try a different Network Interface.";
+		    	statusBar.setForeground(Color.RED);
+	    	}
 	    	
 	    	else if(percentage == 100)
-	    		message = "Packet Transmitted. No Response from Server";
+	    	{
+	    		message = "Packet Transmitted. No Response from Server.";
+		    	statusBar.setForeground(Color.RED);
+	    	}
 	    	
-	    	else {
+	    	else 
+	    	{
 	    		message = "Received Packet to Original Packet Ratio is " + 
 	    			Integer.toString(percentage) + "%";
+		    	// dark green
+		    	statusBar.setForeground(new Color(0,100,0));
 	    	}
 			
 	    	// display ratio
 	    	statusBar.setText(message);
-			
-	    	// dark green
-	    	statusBar.setForeground(new Color(0,100,0));
+	    	
+	    	// Processing is finished. Set the cursor back to normal.
+	    	setCursorToNormal();
     	
     	} // end if
         
     } // end method actionPeformed
+
+    
+    private void setCursorToNormal()
+    {
+    	Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+		setCursor(normalCursor);
+    }
     
     /**
      * Create the GUI and show it.  For thread safety, 
@@ -459,6 +512,7 @@ public class RdosTester extends JPanel implements ActionListener
         newContentPane.setOpaque(true); //content panes must be opaque
         newContentPane.setPreferredSize(new Dimension(400, 325));
         frame.setContentPane(newContentPane);
+        frame.getRootPane().setDefaultButton(button);
 
         //Display the window.
         frame.pack();
