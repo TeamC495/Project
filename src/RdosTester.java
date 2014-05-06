@@ -63,7 +63,7 @@ public class RdosTester extends JPanel implements ActionListener
     private JTextField gMac6;
     
     // selection of network interface
-    private JComboBox networkInterfaceList;
+    private JComboBox<Object> networkInterfaceList;
 
     // status and misc labels
     private JLabel statusBar;
@@ -92,6 +92,9 @@ public class RdosTester extends JPanel implements ActionListener
     private int validDstIP4;
     private int validPort;
     private String validMac;
+    
+    // allow any server or restrict to test server
+    private static final boolean ALLOWANYSERVER = false;
 
 	
     // create instance of packetTransmitter, for sending and receiving packets
@@ -118,29 +121,31 @@ public class RdosTester extends JPanel implements ActionListener
     	// Initialize the destination IP address labels, fields, and action listeners
     	dstIP1 = new JTextField(3);
         dstIP1.setText("5");
-        dstIP1.setEditable(false);
-        dstIP1.setFocusable(false);
+        dstIP1.setEditable(ALLOWANYSERVER);
+        dstIP1.setFocusable(ALLOWANYSERVER);
     	dstIP1.addActionListener(this);
     	dstIP2 = new JTextField(3);
         dstIP2.setText("101");
-        dstIP2.setEditable(false);
-        dstIP2.setFocusable(false);
+        dstIP2.setEditable(ALLOWANYSERVER);
+        dstIP2.setFocusable(ALLOWANYSERVER);
     	dstIP2.addActionListener(this);
     	dstIP3 = new JTextField(3);
         dstIP3.setText("146");
-        dstIP3.setEditable(false);
-        dstIP3.setFocusable(false);
+        dstIP3.setEditable(ALLOWANYSERVER);
+        dstIP3.setFocusable(ALLOWANYSERVER);
     	dstIP3.addActionListener(this);
     	dstIP4 = new JTextField(3);
         dstIP4.setText("67");
-        dstIP4.setEditable(false);
-        dstIP4.setFocusable(false);
+        dstIP4.setEditable(ALLOWANYSERVER);
+        dstIP4.setFocusable(ALLOWANYSERVER);
     	dstIP4.addActionListener(this);
 
     	
     	// Initialize the port labels, fields, and action listeners
     	port = new JTextField(6);
         port.setText("27960");
+        port.setEditable(ALLOWANYSERVER);
+        port.setFocusable(ALLOWANYSERVER);
     	port.addActionListener(this);
     	
     	// Initialize MAC labels, fields, and action listeners
@@ -160,7 +165,7 @@ public class RdosTester extends JPanel implements ActionListener
     	// Get labels for the available network interfaces
     	// Initialize the network interface combo box
     	ArrayList<String> networkInterfaces = new PacketTransmitter().getInterfaceLabels();
-        networkInterfaceList = new JComboBox(networkInterfaces.toArray());
+        networkInterfaceList = new JComboBox<Object>(networkInterfaces.toArray());
     	
     	// Initialize the button
         button = new JButton("Transmit Packet");
