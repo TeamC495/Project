@@ -170,6 +170,8 @@ public class PacketTransmitter {
 		// update packet state with checksums and changes
 		transmitPacket.scan(Ethernet.ID);
 		
+		System.out.println(transmitPacket.toString());
+		
 		// set capture filter using port info from UDP header
 		String filterString = "port " + String.valueOf(udp.destination() + " && udp");
 		
@@ -244,6 +246,9 @@ public class PacketTransmitter {
 	
 	// format received packets for instantiation as RdosPacket object
 	private void formatReceivePacket(JPacket receivePacket) {
+		
+		// dump receive packet to console for test
+		System.out.println(receivePacket.toString());
 		
 		// get number of bytes in packet
 		int responseSize = receivePacket.size();
