@@ -415,7 +415,7 @@ public class RdosTester extends JPanel implements ActionListener
             //display error message if entered MAC is not valid hex
             catch (IllegalArgumentException c) {
 
-            	statusBar.setText("Please enter a complete MAC address");
+            	statusBar.setText("Please enter a hexadecimal MAC address");
                 statusBar.setForeground(Color.RED);
                 
                 // Processing is finished. Set the cursor back to normal.
