@@ -96,7 +96,7 @@ public class RdosTester extends JPanel implements ActionListener
     // allow any server or restrict to test server
     private static final boolean ALLOWANYSERVER = false;
 
-	
+
     // create instance of packetTransmitter, for sending and receiving packets
 //    private PacketTransmitter transmit = new PacketTransmitter();
 
@@ -280,10 +280,8 @@ public class RdosTester extends JPanel implements ActionListener
     	// if button is clicked
     	if(e.getSource() == button)
     	{	    	
-    		message = "";
-    		statusBar.setText(message);
-
-        	System.out.println("my label should be clear");
+    		statusBar.setText("");
+                statusBar.paintImmediately(statusBar.getVisibleRect());
         	
     		Cursor hourGlass = new Cursor(Cursor.WAIT_CURSOR);
     		setCursor(hourGlass);
@@ -449,7 +447,7 @@ public class RdosTester extends JPanel implements ActionListener
 	    			validSrcIP3, validSrcIP4, validDstIP1,
 	    			validDstIP2, validDstIP3, validDstIP4,
 	    			validPort, validMac);
-	    	
+
 	    	PacketTransmitter transmit = new PacketTransmitter();
 	    	// send the packet using the network interface selected in the combo box
 	    	transmit.send(originalPacket, networkInterfaceList.getSelectedIndex());
@@ -459,7 +457,7 @@ public class RdosTester extends JPanel implements ActionListener
 
 	    	// Create an analysis object; sends transmitted and received packet for analysis
 	    	Analysis analysis = new Analysis(receivedPacket.getPacketSize(), originalPacket.getPacketSize());
-	    	
+
 	    	// get ratio of received packet to transmitted packet
 	    	int percentage = analysis.getRatio();
 
@@ -469,13 +467,13 @@ public class RdosTester extends JPanel implements ActionListener
 	    		message = "Packet not Transmitted. Try a different Network Interface.";
 		    	statusBar.setForeground(Color.RED);
 	    	}
-	    	
+
 	    	else if(percentage == 100)
 	    	{
 	    		message = "Packet Transmitted. No Response from Server.";
 		    	statusBar.setForeground(Color.RED);
 	    	}
-	    	
+
 	    	else 
 	    	{
 	    		message = "Received Packet to Original Packet Ratio is " + 
@@ -483,10 +481,10 @@ public class RdosTester extends JPanel implements ActionListener
 		    	// dark green
 		    	statusBar.setForeground(new Color(0,100,0));
 	    	}
-			
+
 	    	// display ratio
 	    	statusBar.setText(message);
-	    	
+
 	    	// Processing is finished. Set the cursor back to normal.
 	    	setCursorToNormal();
     	
