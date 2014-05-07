@@ -280,6 +280,7 @@ public class RdosTester extends JPanel implements ActionListener
     	// if button is clicked
     	if(e.getSource() == button)
     	{	    	
+                // clear status bar
     		statusBar.setText("");
                 statusBar.paintImmediately(statusBar.getVisibleRect());
         	
