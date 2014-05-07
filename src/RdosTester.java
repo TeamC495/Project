@@ -17,6 +17,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -156,22 +157,19 @@ public class RdosTester extends JPanel implements ActionListener
     	gMac6 = new JTextField(2);
     	gMac6.addActionListener(this);
     	
-    	// Get labels for the available network interfaces
-    	// Initialize the network interface combo box
-    	ArrayList<String> networkInterfaces = new PacketTransmitter().getInterfaceLabels();
-        networkInterfaceList = new JComboBox<Object>(networkInterfaces.toArray());
-    	
-    	// Initialize the button
-        button = new JButton("Transmit Packet");
-        button.setToolTipText("Click this button to transmit the packet.");
-        
-        button.addActionListener(this);
-
         // Initialize the status bar
         statusBar = new JLabel();
         raisedEtched = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
         statusBar.setBorder(raisedEtched);
         statusBar.setPreferredSize(new Dimension(390, 30));
+    	
+    	// Get labels for the available network interfaces
+    	ArrayList<String> networkInterfaces;        
+    	
+    	// Initialize the button
+        button = new JButton("Transmit Packet");
+        button.setToolTipText("Click this button to transmit the packet.");        
+        button.addActionListener(this);
         
         // Create the panels to hold the components. The spacer
         // panel is so the transmit button will be right aligned.
@@ -234,10 +232,6 @@ public class RdosTester extends JPanel implements ActionListener
         panel4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panel4.setPreferredSize(new Dimension(400, 40));
         
-        // add label and network combo box
-        panel4.add(new JLabel("Network Interface:"));
-        panel4.add(networkInterfaceList);
-        
         // init panel to hold button
         panel5 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panel5.setPreferredSize(new Dimension(400, 40));
@@ -251,16 +245,51 @@ public class RdosTester extends JPanel implements ActionListener
         panel6.setPreferredSize(new Dimension(400, 40));
         
         // add status bar
-        panel6.add(statusBar);
+        panel6.add(statusBar);        
+
+        // possibility of no available network interface
+    	try {
+			
+        	// Initialize the network interface combo box
+    		networkInterfaces = new PacketTransmitter().getInterfaceLabels();
+			networkInterfaceList = new JComboBox<Object>(networkInterfaces.toArray());
+	        
+	        // add label and network combo box
+	        panel4.add(new JLabel("Network Interface:"));
+	        panel4.add(networkInterfaceList);
         
-        // add sub-panels to main panel
-        add(panel);
-        add(panel1);
-        add(panel2);
-        add(panel3);
-        add(panel4);
-        add(panel5);
-        add(panel6);
+    	} // end try 
+        
+    	catch (IOException e) {
+    		
+    		// initialize empty combo box
+			networkInterfaceList = new JComboBox<Object>(new String[] {"empty"});
+	        
+	        // add label and network combo box
+	        panel4.add(new JLabel("Network Interface:"));
+	        panel4.add(networkInterfaceList);
+			
+    		// Inform user that no network interfaces are available
+    		statusBar.setText("No enabled network devices found. Enable one and restart.");
+    		
+    		// disable transmit button
+    		button.setFocusable(false);
+    		button.setEnabled( false );
+    		
+    	} // end catch
+    	
+    	finally {
+            
+    		// add sub-panels to main panel
+            add(panel);
+            add(panel1);
+            add(panel2);
+            add(panel3);
+            add(panel4);
+            add(panel5);
+            add(panel6);
+    	
+    	} // end finally
     
     } // end constructor
 
@@ -447,40 +476,55 @@ public class RdosTester extends JPanel implements ActionListener
 	    			validDstIP2, validDstIP3, validDstIP4,
 	    			validPort, validMac);
 
-	    	PacketTransmitter transmit = new PacketTransmitter();
-	    	// send the packet using the network interface selected in the combo box
-	    	transmit.send(originalPacket, networkInterfaceList.getSelectedIndex());
+	    	// create a PacketTransmitter object to send the original packet
+	    	PacketTransmitter transmit;
+			
+	    	try {
+				
+	    		transmit = new PacketTransmitter();
+		    	
+	    		// send the packet using the network interface selected in the combo box
+		    	transmit.send(originalPacket, networkInterfaceList.getSelectedIndex());
 
-	    	// Get the received packet
-	    	RdosPacket receivedPacket = transmit.receive();
+		    	// Get the received packet
+		    	RdosPacket receivedPacket = transmit.receive();
 
-	    	// Create an analysis object; sends transmitted and received packet for analysis
-	    	Analysis analysis = new Analysis(receivedPacket.getPacketSize(), originalPacket.getPacketSize());
-
-	    	// get ratio of received packet to transmitted packet
-	    	int percentage = analysis.getRatio();
-
-	    	// prepare ratio message for display
-	    	// If its < 100 then the packet did not transmit.
-	    	if(percentage < 100)
-	    	{
-	    		statusBar.setText("Packet not Transmitted. Try a different Network Interface.");
-		    	statusBar.setForeground(Color.RED);
-	    	}
-	    	// If its == 100 then the server did not respond
-	    	else if(percentage == 100)
-	    	{
-	    		statusBar.setText("Packet Transmitted. No Response from Server.");
-		    	statusBar.setForeground(Color.RED);
-	    	}
-	    	// If its > 100, display the original/received ratio
-	    	else 
-	    	{
-	    		statusBar.setText("Received Packet to Original Packet Ratio is " + 
-	    			Integer.toString(percentage) + "%");
-		    	// dark green
-		    	statusBar.setForeground(new Color(0,100,0));
-	    	}
+		    	// Create an analysis object; sends transmitted and received packet for analysis
+		    	Analysis analysis = new Analysis(receivedPacket.getPacketSize(), originalPacket.getPacketSize());
+	
+		    	// get ratio of received packet to transmitted packet
+		    	int percentage = analysis.getRatio();
+	
+		    	// prepare ratio message for display
+		    	// If its < 100 then the packet did not transmit.
+		    	if(percentage < 100)
+		    	{
+		    		statusBar.setText("Packet not Transmitted. Try a different Network Interface.");
+			    	statusBar.setForeground(Color.RED);
+		    	}
+		    	// If its == 100 then the server did not respond
+		    	else if(percentage == 100)
+		    	{
+		    		statusBar.setText("Packet Transmitted. No Response from Server.");
+			    	statusBar.setForeground(Color.RED);
+		    	}
+		    	// If its > 100, display the original/received ratio
+		    	else 
+		    	{
+		    		statusBar.setText("Received Packet to Original Packet Ratio is " + 
+		    			Integer.toString(percentage) + "%");
+			    	// dark green
+			    	statusBar.setForeground(new Color(0,100,0));
+		    	}
+		    	
+			} // end try
+	    	
+			catch (IOException e1) {
+				
+				// Inform user that no network interfaces are available
+				statusBar.setText("At least one operational network interface is required.");
+			
+			} // end catch
 
 	    	// Processing is finished. Set the cursor back to normal.
 	    	setCursorToNormal();

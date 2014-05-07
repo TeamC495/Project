@@ -71,7 +71,7 @@ public class PacketTransmitter {
 	private static final int TIMEOUT = 5 * 1000;
 	
 	// constructor; calls method to get available network interfaces
-	public PacketTransmitter() {
+	public PacketTransmitter() throws IOException {
 		
 		// enumerate network interfaces
 		getNetworkInterfaces();
@@ -79,16 +79,15 @@ public class PacketTransmitter {
 	} // end constructor PacketTransmitter
 	
 	// gets list of available network interfaces
-	private void getNetworkInterfaces() {
+	private void getNetworkInterfaces() throws IOException{
 		
 		// count available interfaces while adding their handles to a list
 		int numberOfInterfaces = Pcap.findAllDevs(networkInterfaces, errbuf);
 		
 		// generate error if no interfaces available
 		if (numberOfInterfaces == Pcap.NOT_OK || networkInterfaces.isEmpty()) {
-			System.err.printf("Can't read list of devices, error is %s", errbuf
-			    .toString());
-			return;
+			throw new IOException();
+			//return;
 		}
 		
 		System.out.println("Network device found!");		
