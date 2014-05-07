@@ -22,7 +22,8 @@ import java.util.ArrayList;
 /**
  * The RdosTester class is the GUI for the Reflected Denial of Service
  * Tester application. It allows the user to enter a source and destination
- * IP address as well as a port number. It also contains a Transmit button
+ * IP address as well as a port number, the user's mac address, and the 
+ * chosen network interface. It also contains a Transmit button
  * that initiates the test. The results are shown at the bottom of the panel
  * in a status bar.
  * 
@@ -31,7 +32,7 @@ import java.util.ArrayList;
  * 
  * CMSC 495
  * Team C
- * Date Created: 25 April 2014
+ * Date Created: 11 May 2014
  * */
 public class RdosTester extends JPanel implements ActionListener
 {
@@ -69,7 +70,6 @@ public class RdosTester extends JPanel implements ActionListener
     private JLabel statusBar;
     private Border raisedEtched;
     private String DOT = ".";
-    private String message;
     
     // sub-panels
     private JPanel panel;
@@ -96,10 +96,6 @@ public class RdosTester extends JPanel implements ActionListener
     // allow any server or restrict to test server
     private static final boolean ALLOWANYSERVER = false;
 
-
-    // create instance of packetTransmitter, for sending and receiving packets
-//    private PacketTransmitter transmit = new PacketTransmitter();
-
     // Constructor initializes GUI components and layout.
     public RdosTester() 
     {
@@ -116,7 +112,6 @@ public class RdosTester extends JPanel implements ActionListener
     	srcIP4 = new JTextField(3);
         srcIP4.setText("");
     	srcIP4.addActionListener(this);
-
     	
     	// Initialize the destination IP address labels, fields, and action listeners
     	dstIP1 = new JTextField(3);
@@ -139,7 +134,6 @@ public class RdosTester extends JPanel implements ActionListener
         dstIP4.setEditable(ALLOWANYSERVER);
         dstIP4.setFocusable(ALLOWANYSERVER);
     	dstIP4.addActionListener(this);
-
     	
     	// Initialize the port labels, fields, and action listeners
     	port = new JTextField(6);
@@ -177,7 +171,7 @@ public class RdosTester extends JPanel implements ActionListener
         statusBar = new JLabel();
         raisedEtched = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
         statusBar.setBorder(raisedEtched);
-        statusBar.setPreferredSize(new Dimension(375, 30));
+        statusBar.setPreferredSize(new Dimension(390, 30));
         
         // Create the panels to hold the components. The spacer
         // panel is so the transmit button will be right aligned.
@@ -273,8 +267,7 @@ public class RdosTester extends JPanel implements ActionListener
     /*
      * The actionPerformed method takes action depending upon
      * which component in the gui is selected by the user. 
-     **/    
-        
+     **/            
     public void actionPerformed(ActionEvent e) 
     {
     	// if button is clicked
@@ -282,168 +275,173 @@ public class RdosTester extends JPanel implements ActionListener
     	{	    	
                 // clear status bar
     		statusBar.setText("");
-                statusBar.paintImmediately(statusBar.getVisibleRect());
+            statusBar.paintImmediately(statusBar.getVisibleRect());
         	
     		Cursor hourGlass = new Cursor(Cursor.WAIT_CURSOR);
     		setCursor(hourGlass);
-                
-                // validate source IP
-                try {
+    		
+            //============================================//
+			//           DATA VALIDATION SECTION          //
+		    //============================================//
+            // validate source IP
+            try {
 
-                    message = "Please enter a valid Source IP Address";
+                //convert entered source IP address text to ints
+                validSrcIP1 = Integer.parseInt(srcIP1.getText());
+                validSrcIP2 = Integer.parseInt(srcIP2.getText());
+                validSrcIP3 = Integer.parseInt(srcIP3.getText());
+                validSrcIP4 = Integer.parseInt(srcIP4.getText());
+
+                //display error message if entered source IP address is not valid
+                if (validSrcIP1 < 0 || validSrcIP1 > 255 || validSrcIP2 < 0 || validSrcIP2 > 255 || validSrcIP3 < 0 || validSrcIP3 > 255
+                        || validSrcIP4 < 0 || validSrcIP4 > 255){
+
+                    statusBar.setText("Please enter a valid Source IP Address");
                     statusBar.setForeground(Color.RED);
-
-                    //convert entered source IP address text to ints
-                    validSrcIP1 = Integer.parseInt(srcIP1.getText());
-                    validSrcIP2 = Integer.parseInt(srcIP2.getText());
-                    validSrcIP3 = Integer.parseInt(srcIP3.getText());
-                    validSrcIP4 = Integer.parseInt(srcIP4.getText());
-
-                    //display error message if entered source IP address is not valid
-                    if (validSrcIP1 < 0 || validSrcIP1 > 255 || validSrcIP2 < 0 || validSrcIP2 > 255 || validSrcIP3 < 0 || validSrcIP3 > 255
-                            || validSrcIP4 < 0 || validSrcIP4 > 255){
-
-                        statusBar.setText(message);
-                        
-                        // Processing is finished. Set the cursor back to normal.
-            	    	setCursorToNormal();
-                        return;
-                    }
-                
-                } // end try
-                
-                //display error message if entered source IP address is not numeric
-                catch (NumberFormatException c) {
-
-                    statusBar.setText(message);	
                     
                     // Processing is finished. Set the cursor back to normal.
         	    	setCursorToNormal();
                     return;
+                }
+            
+            } // end try
+            
+            //display error message if entered source IP address is not numeric
+            catch (NumberFormatException c) {
+
+                statusBar.setText("Please enter a valid Source IP Address");	
+                statusBar.setForeground(Color.RED);
                 
-                } // end catch
-              
-                // validate destination IP
-                try {
+                // Processing is finished. Set the cursor back to normal.
+    	    	setCursorToNormal();
+                return;
+            
+            } // end catch
+          
+            // validate destination IP
+            try {
 
-                    message = "Please enter a valid Destination IP Address";
+                //convert entered destination IP address text to ints
+                validDstIP1 = Integer.parseInt(dstIP1.getText());
+                validDstIP2 = Integer.parseInt(dstIP2.getText());
+                validDstIP3 = Integer.parseInt(dstIP3.getText());
+                validDstIP4 = Integer.parseInt(dstIP4.getText());
+
+                //display error message if entered destination IP address is not valid
+                if (validDstIP1 < 0 || validDstIP1 > 255 || validDstIP2 < 0 || validDstIP2 > 255 || validDstIP3 < 0 || validDstIP3 > 255
+                        || validDstIP4 < 0 || validDstIP4 > 255){
+
+                    statusBar.setText("Please enter a valid Destination IP Address");
                     statusBar.setForeground(Color.RED);
+                    
+                    // Processing is finished. Set the cursor back to normal.
+        	    	setCursorToNormal();
+                    return;
+                }
+           
+            } // end try
+            
+            //display error message if entered destination IP address is not numeric
+            catch (NumberFormatException c) {
 
-                    //convert entered destination IP address text to ints
-                    validDstIP1 = Integer.parseInt(dstIP1.getText());
-                    validDstIP2 = Integer.parseInt(dstIP2.getText());
-                    validDstIP3 = Integer.parseInt(dstIP3.getText());
-                    validDstIP4 = Integer.parseInt(dstIP4.getText());
+            	statusBar.setText("Please enter a valid Destination IP Address");
+                statusBar.setForeground(Color.RED);	
+                
+                // Processing is finished. Set the cursor back to normal.
+    	    	setCursorToNormal();
+                return;
+            
+            } // end catch
+            
+            // validate port
+            try {
 
-                    //display error message if entered destination IP address is not valid
-                    if (validDstIP1 < 0 || validDstIP1 > 255 || validDstIP2 < 0 || validDstIP2 > 255 || validDstIP3 < 0 || validDstIP3 > 255
-                            || validDstIP4 < 0 || validDstIP4 > 255){
-
-                        statusBar.setText(message);
-                        
-                        // Processing is finished. Set the cursor back to normal.
-            	    	setCursorToNormal();
-                        return;
-                    }
+                //convert entered port text to an int
+                validPort = Integer.parseInt(port.getText());
                
-                } // end try
-                
-                //display error message if entered destination IP address is not numeric
-                catch (NumberFormatException c) {
+                //display error message if entered port is not valid
+                if (validPort < 0 || validPort > 65535){
 
-                    statusBar.setText(message);		
-                    
-                    // Processing is finished. Set the cursor back to normal.
-        	    	setCursorToNormal();
-                    return;
-                
-                } // end catch
-                
-                // validate port
-                try {
-
-                    message = "Please enter a port number between 0 and 65535";
+                    statusBar.setText("Please enter a port number between 0 and 65535");
                     statusBar.setForeground(Color.RED);
                     
-                    //convert entered port text to an int
-                    validPort = Integer.parseInt(port.getText());
-                   
-                    //display error message if entered port is not valid
-                    if (validPort < 0 || validPort > 65535){
-
-                        statusBar.setText(message);
-                        
-                        // Processing is finished. Set the cursor back to normal.
-            	    	setCursorToNormal();
-                        return;
-                    }
-                
-                } // end try
-                
-                //display error message if entered port is not numeric
-                catch (NumberFormatException c) {
-
-                    statusBar.setText(message);	
-                    
                     // Processing is finished. Set the cursor back to normal.
         	    	setCursorToNormal();
                     return;
-                
-                } // end catch
-                
-                 
-                // validate gateway MAC
-                try {
+                }
+            
+            } // end try
+            
+            //display error message if entered port is not numeric
+            catch (NumberFormatException c) {
 
-                    message = "Please enter a complete MAC address";
+            	statusBar.setText("Please enter a port number between 0 and 65535");
+                statusBar.setForeground(Color.RED);	
+                
+                // Processing is finished. Set the cursor back to normal.
+    	    	setCursorToNormal();
+                return;
+            
+            } // end catch
+            
+             
+            // validate gateway MAC
+            try {
+
+                // test for valid hex
+                DatatypeConverter.parseHexBinary(gMac1.getText());
+                DatatypeConverter.parseHexBinary(gMac2.getText());
+                DatatypeConverter.parseHexBinary(gMac3.getText());
+                DatatypeConverter.parseHexBinary(gMac4.getText());
+                DatatypeConverter.parseHexBinary(gMac5.getText());
+                DatatypeConverter.parseHexBinary(gMac6.getText());
+                
+                //concatenate text fields
+                validMac = gMac1.getText() + gMac2.getText() + gMac3.getText() + gMac4.getText() + gMac5.getText() + gMac6.getText();
+               
+                // test for correct string length
+                if (validMac.length() != 12){
+
+                    statusBar.setText("Please enter a complete MAC address");
                     statusBar.setForeground(Color.RED);
                     
-                    // test for valid hex
-                    DatatypeConverter.parseHexBinary(gMac1.getText());
-                    DatatypeConverter.parseHexBinary(gMac2.getText());
-                    DatatypeConverter.parseHexBinary(gMac3.getText());
-                    DatatypeConverter.parseHexBinary(gMac4.getText());
-                    DatatypeConverter.parseHexBinary(gMac5.getText());
-                    DatatypeConverter.parseHexBinary(gMac6.getText());
-                    
-                    //concatenate text fields
-                    validMac = gMac1.getText() + gMac2.getText() + gMac3.getText() + gMac4.getText() + gMac5.getText() + gMac6.getText();
-                   
-                    // test for correct string length
-                    if (validMac.length() != 12){
-
-                        statusBar.setText(message);
-                        
-                        // Processing is finished. Set the cursor back to normal.
-            	    	setCursorToNormal();
-                        return;
-                    }
-                
-                } // end try
-                
-                //display error message if entered MAC is not valid hex
-                catch (IllegalArgumentException c) {
-
-                    statusBar.setText(message);	
-                    
                     // Processing is finished. Set the cursor back to normal.
         	    	setCursorToNormal();
                     return;
-                
-                } // end catch
-                
-                // display error message if entered MAC is incomplete
-                catch (NullPointerException c) {
+                }
+            
+            } // end try
+            
+            //display error message if entered MAC is not valid hex
+            catch (IllegalArgumentException c) {
 
-                    statusBar.setText(message);	
-                    
-                    // Processing is finished. Set the cursor back to normal.
-        	    	setCursorToNormal();
-                    return;
+            	statusBar.setText("Please enter a complete MAC address");
+                statusBar.setForeground(Color.RED);
                 
-                } // end catch
+                // Processing is finished. Set the cursor back to normal.
+    	    	setCursorToNormal();
+                return;
+            
+            } // end catch
+            
+            // display error message if entered MAC is incomplete
+            catch (NullPointerException c) {
+
+            	statusBar.setText("Please enter a complete MAC address");
+                statusBar.setForeground(Color.RED);
                 
-    		// Create the original packet; to be transmitted 
+                // Processing is finished. Set the cursor back to normal.
+    	    	setCursorToNormal();
+                return;
+            
+            } // end catch
+              
+            
+            //============================================//
+            //      PACKET TRANSMISSION SECTION           //
+            //============================================//
+    		
+            // Create the original packet; to be transmitted 
 	    	RdosPacket originalPacket = new RdosPacket(validSrcIP1, validSrcIP2,
 	    			validSrcIP3, validSrcIP4, validDstIP1,
 	    			validDstIP2, validDstIP3, validDstIP4,
@@ -463,28 +461,26 @@ public class RdosTester extends JPanel implements ActionListener
 	    	int percentage = analysis.getRatio();
 
 	    	// prepare ratio message for display
+	    	// If its < 100 then the packet did not transmit.
 	    	if(percentage < 100)
 	    	{
-	    		message = "Packet not Transmitted. Try a different Network Interface.";
+	    		statusBar.setText("Packet not Transmitted. Try a different Network Interface.");
 		    	statusBar.setForeground(Color.RED);
 	    	}
-
+	    	// If its == 100 then the server did not respond
 	    	else if(percentage == 100)
 	    	{
-	    		message = "Packet Transmitted. No Response from Server.";
+	    		statusBar.setText("Packet Transmitted. No Response from Server.");
 		    	statusBar.setForeground(Color.RED);
 	    	}
-
+	    	// If its > 100, display the original/received ratio
 	    	else 
 	    	{
-	    		message = "Received Packet to Original Packet Ratio is " + 
-	    			Integer.toString(percentage) + "%";
+	    		statusBar.setText("Received Packet to Original Packet Ratio is " + 
+	    			Integer.toString(percentage) + "%");
 		    	// dark green
 		    	statusBar.setForeground(new Color(0,100,0));
 	    	}
-
-	    	// display ratio
-	    	statusBar.setText(message);
 
 	    	// Processing is finished. Set the cursor back to normal.
 	    	setCursorToNormal();
@@ -493,7 +489,9 @@ public class RdosTester extends JPanel implements ActionListener
         
     } // end method actionPeformed
 
-    
+    /**
+     * Sets the cursor to the default windows cursor
+     **/
     private void setCursorToNormal()
     {
     	Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
@@ -514,7 +512,7 @@ public class RdosTester extends JPanel implements ActionListener
         //Create and set up the content pane.
         RdosTester newContentPane = new RdosTester();
         newContentPane.setOpaque(true); //content panes must be opaque
-        newContentPane.setPreferredSize(new Dimension(400, 325));
+        newContentPane.setPreferredSize(new Dimension(400, 318));
         frame.setContentPane(newContentPane);
         frame.getRootPane().setDefaultButton(button);
 
