@@ -1,13 +1,13 @@
 /** 
  * Class: CMSC495 Spring 2014
- * Assignment: Capstone, Week 6, Sprint 1
+ * Assignment: Capstone, Week 8, Final
  * 
  * Team Members: Brad Norman, Jamie Lane, Daniel Ross
  * 
  * Date: 26 April 2014 
  * 
  * File:	RdosTester.java (main application) 	
- * 			Packet.java
+ * 			RdosPacket.java
  * 			->PacketTransmitter.java<-
  * 			Analysis.java
  * 			
@@ -87,10 +87,8 @@ public class PacketTransmitter {
 		// generate error if no interfaces available
 		if (numberOfInterfaces == Pcap.NOT_OK || networkInterfaces.isEmpty()) {
 			throw new IOException();
-			//return;
-		}
-		
-		System.out.println("Network device found!");		
+
+		}	
 	
 	} // end method getNetworkInterfaces
 	
@@ -110,8 +108,6 @@ public class PacketTransmitter {
 			        : "No description available";
 			
 			labelList.add("#" + i + " " + description);
-			
-			System.out.println(labelList.get(i));
 			
 			i++;
 		}
@@ -168,8 +164,6 @@ public class PacketTransmitter {
 		
 		// update packet state with checksums and changes
 		transmitPacket.scan(Ethernet.ID);
-		
-		System.out.println(transmitPacket.toString());
 		
 		// set capture filter using port info from UDP header
 		String filterString = "port " + String.valueOf(udp.destination() + " && udp");
@@ -277,8 +271,6 @@ public class PacketTransmitter {
 		
 		// create RdosPacket object using contents of captured packet
 		RdosPacket receivePacket = new RdosPacket(statusResponse);
-		
-		// System.err.println("\nReceive packet:\n" + receivePacket.toString() + "\n");
 		
 		// return object
 		return receivePacket;

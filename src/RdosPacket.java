@@ -1,13 +1,13 @@
 /** 
  * Class: CMSC495 Spring 2014
- * Assignment: Capstone, Week 6, Sprint 1
+ * Assignment: Capstone, Week 8, Final
  * 
  * Team Members: Brad Norman, Jamie Lane, Daniel Ross
  * 
  * Date: 26 April 2014 
  * 
  * File:	RdosTester.java (main application) 	
- * 			->Packet.java<-
+ * 			->RdosPacket.java<-
  * 			PacketTransmitter.java
  * 			Analysis.java
  * 			
@@ -36,10 +36,6 @@ public class RdosPacket {
 	
 	// holds string hex representing gateway MAC
 	private String gatewayMac;
-	
-	// ethernet frame containing representative "getStatus" message 
-	// private String packetBase = "d4ca6dccdd5174d02b35a3c408004500002950a10000801139bcc0a85816056592436d386d3800153d3cffffffff676574737461747573";
-	// private String packetBase = "d4ca6dccdd5174d02b35a3c408004500002922c0000080110d52c0a858162ee4c30f6d386d380015e2f0ffffffff676574737461747573";
 	
 	// "getInfo message" included to portability problems with getStatus
 	private String packetBase = "ffffffffffff00241dd16fb608004500002b7c5000008011a5bfc0a8580affffffff6d386d3b001762cbffffffff676574696e666f20787878000000";

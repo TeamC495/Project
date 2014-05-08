@@ -1,3 +1,19 @@
+/**
+ * The RdosTester class is the GUI for the Reflected Denial of Service
+ * Tester application. It allows the user to enter a source and destination
+ * IP address as well as a port number, the user's mac address, and the 
+ * chosen network interface. It also contains a Transmit button
+ * that initiates the test. The results are shown at the bottom of the panel
+ * in a status bar.
+ * 
+ * @author Jamie M. Lane
+ * @version 1.0
+ * 
+ * CMSC 495
+ * Team C
+ * Date Created: 11 May 2014
+ * */
+
 package teamC;
 
 import javax.swing.BorderFactory;
@@ -20,21 +36,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * The RdosTester class is the GUI for the Reflected Denial of Service
- * Tester application. It allows the user to enter a source and destination
- * IP address as well as a port number, the user's mac address, and the 
- * chosen network interface. It also contains a Transmit button
- * that initiates the test. The results are shown at the bottom of the panel
- * in a status bar.
- * 
- * @author Jamie M. Lane
- * @version 1.0
- * 
- * CMSC 495
- * Team C
- * Date Created: 11 May 2014
- * */
+// GUI, creates main thread for program operation
 public class RdosTester extends JPanel implements ActionListener
 {
 
@@ -271,6 +273,7 @@ public class RdosTester extends JPanel implements ActionListener
 			
     		// Inform user that no network interfaces are available
     		statusBar.setText("No enabled network devices found. Enable one and restart.");
+    		statusBar.setForeground(Color.RED);
     		
     		// disable transmit button
     		button.setFocusable(false);

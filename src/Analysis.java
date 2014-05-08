@@ -1,13 +1,13 @@
 /** 
  * Class: CMSC495 Spring 2014
- * Assignment: Capstone, Week 6, Sprint 1
+ * Assignment: Capstone, Week 8, Final
  * 
  * Team Members: Brad Norman, Jamie Lane, Daniel Ross
  * 
  * Date: 26 April 2014 
  * 
  * File:	RdosTester.java (main application) 	
- * 			Packet.java
+ * 			RdosPacket.java
  * 			PacketTransmitter.java
  * 			->Analysis.java<-
  * 			
